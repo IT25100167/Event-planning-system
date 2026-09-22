@@ -37,3 +37,11 @@ build/
 ### Mac OS ###
 .DS_Store
 
+# Local IntelliJ files
+.idea/
+
+# Local backup files
+backups/
+
+# Local application configuration
+backend/src/main/resources/application.yml
