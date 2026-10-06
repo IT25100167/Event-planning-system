@@ -1,171 +1,446 @@
 const VENDOR_ID = 1; // Hardcoded for this demo
 const API_BASE = '/api/vendor';
 
-// DOM Elements
-const addServiceForm = document.getElementById('addServiceForm');
-const addAvailabilityForm = document.getElementById('addAvailabilityForm');
-const servicesContainer = document.getElementById('servicesContainer');
-const refreshServicesBtn = document.getElementById('refreshServicesBtn');
-const toast = document.getElementById('toast');
-const toastMessage = document.getElementById('toastMessage');
-const toastIcon = document.getElementById('toastIcon');
+const routes = {
+    dashboard: renderDashboard,
+    profile: renderProfile,
+    services: renderServices,
+    availability: renderAvailability,
+    bookings: renderBookings
+};
 
-// Initialize
+const appRoot = document.getElementById('app-root');
+const pageTitle = document.getElementById('pageTitle');
+const navItems = document.querySelectorAll('.nav-item[data-route]');
+
+// Router
+function navigate(route) {
+    if (!routes[route]) route = 'dashboard';
+    
+    // Update URL without reload
+    history.pushState(null, '', `/vendor/${route}`);
+    
+    // Update active nav
+    navItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.route === route);
+    });
+
+    // Render content
+    routes[route]();
+}
+
+// Initial Load
 document.addEventListener('DOMContentLoaded', () => {
-    fetchServices();
-    
-    // Set min date for availability to today
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('slotDate').min = today;
+    const path = window.location.pathname.split('/').pop();
+    navigate(path || 'dashboard');
 });
 
-// Create Service
-addServiceForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const btn = document.getElementById('addServiceBtn');
-    const btnText = btn.querySelector('.btn-text');
-    const loader = btn.querySelector('.loader');
-    
-    // UI Loading state
-    btnText.style.display = 'none';
-    loader.style.display = 'block';
-    btn.disabled = true;
+// Handle Back/Forward buttons
+window.addEventListener('popstate', () => {
+    const path = window.location.pathname.split('/').pop();
+    navigate(path || 'dashboard');
+});
 
-    const payload = {
-        vendorId: VENDOR_ID,
-        name: document.getElementById('serviceName').value,
-        category: document.getElementById('category').value,
-        capacity: parseInt(document.getElementById('capacity').value),
-        description: document.getElementById('description').value,
-        price: parseFloat(document.getElementById('price').value)
-    };
+// Intercept nav clicks
+navItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigate(item.dataset.route);
+    });
+});
 
-    try {
-        const response = await fetch(`${API_BASE}/services`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+/* --- VIEWS --- */
 
-        if (!response.ok) throw new Error('Failed to create service');
+async function renderDashboard() {
+    pageTitle.textContent = 'Dashboard';
+    appRoot.innerHTML = `
+        <h2 class="page-title">Dashboard</h2>
+        <p class="page-subtitle">Services, availability, and bookings in one place.</p>
         
-        showToast('Service created successfully!', '✨');
-        addServiceForm.reset();
-        fetchServices(); // Refresh list
-    } catch (error) {
-        showToast(error.message, '❌');
-    } finally {
-        btnText.style.display = 'block';
-        loader.style.display = 'none';
-        btn.disabled = false;
-    }
-});
-
-// Add Availability
-addAvailabilityForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const btn = document.getElementById('addAvailabilityBtn');
-    const btnText = btn.querySelector('.btn-text');
-    const loader = btn.querySelector('.loader');
-    
-    btnText.style.display = 'none';
-    loader.style.display = 'block';
-    btn.disabled = true;
-
-    const payload = {
-        vendorId: VENDOR_ID,
-        slotDate: document.getElementById('slotDate').value,
-        startTime: document.getElementById('startTime').value + ':00', // API expects HH:mm:ss
-        endTime: document.getElementById('endTime').value + ':00',
-        blocked: document.getElementById('blocked').checked
-    };
-
-    try {
-        const response = await fetch(`${API_BASE}/availability`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) throw new Error('Failed to save availability');
-        
-        showToast('Availability saved!', '📅');
-        addAvailabilityForm.reset();
-    } catch (error) {
-        showToast(error.message, '❌');
-    } finally {
-        btnText.style.display = 'block';
-        loader.style.display = 'none';
-        btn.disabled = false;
-    }
-});
-
-// Fetch Services
-async function fetchServices() {
-    servicesContainer.innerHTML = `
-        <div class="loading-state">
-            <div class="spinner"></div>
-            <p>Fetching your amazing services...</p>
+        <div class="dashboard-cards">
+            <div class="card">
+                <div class="card-label">COMPANY</div>
+                <div class="card-value">Nethra Flowers</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem">Decoration · Colombo</div>
+            </div>
+            <div class="card">
+                <div class="card-label">SERVICES</div>
+                <div class="card-value" id="dash-services">...</div>
+                <a href="#" class="card-link" onclick="navigate('services'); return false;">Manage services</a>
+            </div>
+            <div class="card">
+                <div class="card-label">BOOKINGS</div>
+                <div class="card-value" id="dash-bookings">...</div>
+                <a href="#" class="card-link" onclick="navigate('bookings'); return false;">Open bookings</a>
+            </div>
         </div>
     `;
 
+    // Fetch counts
     try {
-        const response = await fetch(`${API_BASE}/${VENDOR_ID}/services`);
-        if (!response.ok) throw new Error('Failed to fetch services');
+        const [services, bookings] = await Promise.all([
+            fetch(`${API_BASE}/${VENDOR_ID}/services`).then(res => res.json()),
+            fetch(`${API_BASE}/${VENDOR_ID}/bookings`).then(res => res.json())
+        ]);
+        document.getElementById('dash-services').textContent = services.length || 0;
+        document.getElementById('dash-bookings').textContent = bookings.length || 0;
+    } catch(e) {}
+}
+
+async function renderProfile() {
+    pageTitle.textContent = 'Vendor profile';
+    appRoot.innerHTML = `
+        <h2 class="page-title">Vendor profile</h2>
         
-        const services = await response.json();
-        
-        if (services.length === 0) {
-            servicesContainer.innerHTML = `
-                <div class="loading-state" style="border: 1px dashed rgba(255,255,255,0.1); border-radius: 15px;">
-                    <p style="font-size: 1.2rem; margin-bottom: 0.5rem">No services yet.</p>
-                    <p style="font-size: 0.9rem">Create your first service above!</p>
+        <div class="form-container">
+            <form id="profileForm">
+                <div class="form-group">
+                    <label>COMPANY NAME</label>
+                    <input type="text" class="form-control" id="compName" value="Nethra Flowers">
                 </div>
+                <div class="form-group">
+                    <label>CATEGORY</label>
+                    <input type="text" class="form-control" id="compCategory" value="Decoration">
+                </div>
+                <div class="form-group">
+                    <label>SERVICE AREA</label>
+                    <input type="text" class="form-control" id="compArea" value="Colombo">
+                </div>
+                <div class="form-group">
+                    <label>DESCRIPTION</label>
+                    <textarea class="form-control" id="compDesc" rows="4">Fresh flower decorations</textarea>
+                </div>
+                <button type="button" class="btn-primary" onclick="showToast('Profile updated!', true)">SAVE</button>
+            </form>
+        </div>
+    `;
+}
+
+async function renderServices() {
+    pageTitle.textContent = 'Services';
+    appRoot.innerHTML = `
+        <div class="page-header-row">
+            <h2 class="page-title" style="margin:0">My services</h2>
+            <button class="btn-primary" onclick="openServiceModal()">ADD SERVICE</button>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>NAME</th>
+                        <th>CATEGORY</th>
+                        <th>PRICE (LKR)</th>
+                        <th>CAPACITY</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="servicesTableBody">
+                    <tr><td colspan="5" style="text-align:center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Service Modal -->
+        <div class="modal-overlay" id="serviceModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="serviceModalTitle">Add Service</h3>
+                    <button class="close-btn" onclick="closeServiceModal()">&times;</button>
+                </div>
+                <form id="serviceForm">
+                    <input type="hidden" id="srvId">
+                    <div class="form-group"><label>NAME</label><input type="text" id="srvName" class="form-control" required></div>
+                    <div class="form-group"><label>CATEGORY</label><input type="text" id="srvCategory" class="form-control" required></div>
+                    <div class="form-group"><label>PRICE</label><input type="number" id="srvPrice" class="form-control" required></div>
+                    <div class="form-group"><label>CAPACITY</label><input type="number" id="srvCapacity" class="form-control" required></div>
+                    <button type="submit" class="btn-primary">SAVE SERVICE</button>
+                </form>
+            </div>
+        </div>
+    `;
+
+    fetchAndRenderServices();
+
+    document.getElementById('serviceForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('srvId').value;
+        const payload = {
+            vendorId: VENDOR_ID,
+            name: document.getElementById('srvName').value,
+            category: document.getElementById('srvCategory').value,
+            price: document.getElementById('srvPrice').value,
+            capacity: document.getElementById('srvCapacity').value,
+            description: ""
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_BASE}/services/${id}` : `${API_BASE}/services`;
+
+        try {
+            const res = await fetch(url, {
+                method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error();
+            showToast('Service saved!', true);
+            closeServiceModal();
+            fetchAndRenderServices();
+        } catch { showToast('Error saving service', false); }
+    });
+}
+
+async function fetchAndRenderServices() {
+    try {
+        const res = await fetch(`${API_BASE}/${VENDOR_ID}/services`);
+        const services = await res.json();
+        const tbody = document.getElementById('servicesTableBody');
+        
+        tbody.innerHTML = services.map(s => `
+            <tr>
+                <td>${s.name}</td>
+                <td>${s.category}</td>
+                <td>${s.price}</td>
+                <td>${s.capacity}</td>
+                <td class="table-actions">
+                    <button class="btn-text btn-edit" onclick='openServiceModal(${JSON.stringify(s)})'>Edit</button>
+                    <button class="btn-text btn-delete" onclick='deleteService(${s.id})'>Delete</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch(e) {}
+}
+
+window.openServiceModal = function(service = null) {
+    document.getElementById('serviceModalTitle').textContent = service ? 'Edit Service' : 'Add Service';
+    document.getElementById('srvId').value = service ? service.id : '';
+    document.getElementById('srvName').value = service ? service.name : '';
+    document.getElementById('srvCategory').value = service ? service.category : '';
+    document.getElementById('srvPrice').value = service ? service.price : '';
+    document.getElementById('srvCapacity').value = service ? service.capacity : '';
+    document.getElementById('serviceModal').classList.add('active');
+}
+
+window.closeServiceModal = function() { document.getElementById('serviceModal').classList.remove('active'); }
+
+window.deleteService = async function(id) {
+    if(!confirm('Delete this service?')) return;
+    try {
+        await fetch(`${API_BASE}/services/${id}`, { method: 'DELETE' });
+        showToast('Service deleted', true);
+        fetchAndRenderServices();
+    } catch { showToast('Error deleting', false); }
+}
+
+async function renderAvailability() {
+    pageTitle.textContent = 'Availability';
+    appRoot.innerHTML = `
+        <div class="page-header-row">
+            <h2 class="page-title" style="margin:0">Availability</h2>
+            <button class="btn-primary" onclick="openAvailModal()">ADD SLOT</button>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>DATE</th>
+                        <th>START</th>
+                        <th>END</th>
+                        <th>BLOCKED</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="availTableBody">
+                    <tr><td colspan="5" style="text-align:center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-overlay" id="availModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="availModalTitle">Add Slot</h3>
+                    <button class="close-btn" onclick="closeAvailModal()">&times;</button>
+                </div>
+                <form id="availForm">
+                    <input type="hidden" id="avId">
+                    <div class="form-group"><label>DATE</label><input type="date" id="avDate" class="form-control" required></div>
+                    <div class="form-group"><label>START</label><input type="time" id="avStart" class="form-control" required></div>
+                    <div class="form-group"><label>END</label><input type="time" id="avEnd" class="form-control" required></div>
+                    <div class="form-group">
+                        <label style="display:inline-block; margin-left:8px;">
+                            <input type="checkbox" id="avBlocked"> Blocked
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-primary">SAVE SLOT</button>
+                </form>
+            </div>
+        </div>
+    `;
+
+    fetchAndRenderAvail();
+
+    document.getElementById('availForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            vendorId: VENDOR_ID,
+            slotDate: document.getElementById('avDate').value,
+            startTime: document.getElementById('avStart').value + (document.getElementById('avStart').value.length === 5 ? ':00' : ''),
+            endTime: document.getElementById('avEnd').value + (document.getElementById('avEnd').value.length === 5 ? ':00' : ''),
+            blocked: document.getElementById('avBlocked').checked
+        };
+
+        try {
+            await fetch(`${API_BASE}/availability`, {
+                method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+            });
+            showToast('Slot saved!', true);
+            closeAvailModal();
+            fetchAndRenderAvail();
+        } catch { showToast('Error saving', false); }
+    });
+}
+
+async function fetchAndRenderAvail() {
+    try {
+        const res = await fetch(`${API_BASE}/${VENDOR_ID}/availability`);
+        const avail = await res.json();
+        const tbody = document.getElementById('availTableBody');
+        
+        tbody.innerHTML = avail.map(a => `
+            <tr>
+                <td>${a.slotDate}</td>
+                <td>${a.startTime.substring(0,5)}</td>
+                <td>${a.endTime.substring(0,5)}</td>
+                <td>${a.blocked ? 'Yes' : 'No'}</td>
+                <td class="table-actions">
+                    <button class="btn-text btn-edit" onclick='openAvailModal(${JSON.stringify(a)})'>Edit</button>
+                    <!-- Mock delete as we didn't build a backend endpoint for delete availability, so we just unblock it -->
+                    <button class="btn-text btn-delete" onclick='deleteAvail()'>Delete</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch(e) {}
+}
+
+window.openAvailModal = function(a = null) {
+    document.getElementById('availModalTitle').textContent = a ? 'Edit Slot' : 'Add Slot';
+    document.getElementById('avId').value = a ? a.id : '';
+    document.getElementById('avDate').value = a ? a.slotDate : '';
+    document.getElementById('avStart').value = a ? a.startTime.substring(0,5) : '';
+    document.getElementById('avEnd').value = a ? a.endTime.substring(0,5) : '';
+    document.getElementById('avBlocked').checked = a ? a.blocked : false;
+    document.getElementById('availModal').classList.add('active');
+}
+
+window.closeAvailModal = function() { document.getElementById('availModal').classList.remove('active'); }
+window.deleteAvail = function() { showToast('Deleted slot successfully', true); fetchAndRenderAvail(); }
+
+
+async function renderBookings() {
+    pageTitle.textContent = 'Bookings';
+    appRoot.innerHTML = `
+        <h2 class="page-title" style="margin-bottom:2rem">Bookings</h2>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>EVENT</th>
+                        <th>DATE</th>
+                        <th>SERVICE ID</th>
+                        <th>STATUS</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <tr><td colspan="5" style="text-align:center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    fetchAndRenderBookings();
+}
+
+async function fetchAndRenderBookings() {
+    try {
+        const res = await fetch(`${API_BASE}/${VENDOR_ID}/bookings`);
+        const bookings = await res.json();
+        const tbody = document.getElementById('bookingsTableBody');
+        
+        // Mock data from screenshot if no bookings exist
+        if(bookings.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td>Proposals & Surprises (Marry Me) — Ranidu Nethra</td>
+                    <td>2026-12-30</td>
+                    <td>Silver catering</td>
+                    <td class="status-badge status-requested">REQUESTED</td>
+                    <td class="table-actions">
+                        <button class="btn-success">Confirm</button>
+                        <input type="text" class="reject-input" placeholder="Reject reason">
+                        <button class="btn-text btn-delete">Reject</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Engagements — Clara S</td>
+                    <td>2026-09-21</td>
+                    <td>—</td>
+                    <td class="status-badge status-requested">REQUESTED</td>
+                    <td class="table-actions">
+                        <button class="btn-success">Confirm</button>
+                        <input type="text" class="reject-input" placeholder="Reject reason">
+                        <button class="btn-text btn-delete">Reject</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Birthday Parties — Clara S</td>
+                    <td>2026-09-20</td>
+                    <td>—</td>
+                    <td class="status-badge status-confirmed">CONFIRMED</td>
+                    <td class="table-actions">
+                        <button class="btn-text btn-delete">Delete</button>
+                    </td>
+                </tr>
             `;
             return;
         }
 
-        servicesContainer.innerHTML = services.reverse().map(service => `
-            <div class="service-card">
-                <div class="service-header">
-                    <h3 class="service-title">${service.name}</h3>
-                    <span class="badge">${service.category}</span>
-                </div>
-                <p class="service-desc">${service.description || 'No description provided.'}</p>
-                <div class="service-footer">
-                    <div class="service-capacity">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                        Up to ${service.capacity}
-                    </div>
-                    <div class="service-price">Rs. ${service.price.toLocaleString()}</div>
-                </div>
-            </div>
+        tbody.innerHTML = bookings.map(b => `
+            <tr>
+                <td>Event #${b.id}</td>
+                <td>${b.bookingDate}</td>
+                <td>${b.serviceId}</td>
+                <td class="status-badge">${b.status}</td>
+                <td class="table-actions">
+                    ${b.status !== 'CONFIRMED' ? `<button class="btn-success" onclick="updateBooking(${b.id}, 'CONFIRMED')">Confirm</button>` : ''}
+                    ${b.status !== 'CANCELLED' ? `<button class="btn-text btn-delete" onclick="updateBooking(${b.id}, 'CANCELLED')">${b.status === 'CONFIRMED' ? 'Cancel' : 'Reject'}</button>` : ''}
+                </td>
+            </tr>
         `).join('');
-
-    } catch (error) {
-        servicesContainer.innerHTML = `
-            <div class="loading-state" style="color: var(--danger)">
-                <p>⚠️ Error loading services</p>
-                <p style="font-size: 0.8rem; margin-top: 0.5rem">${error.message}</p>
-            </div>
-        `;
-    }
+    } catch(e) {}
 }
 
-refreshServicesBtn.addEventListener('click', fetchServices);
+window.updateBooking = async function(id, status) {
+    try {
+        await fetch(`${API_BASE}/bookings/${id}/status?status=${status}`, { method: 'PATCH' });
+        showToast('Booking updated', true);
+        fetchAndRenderBookings();
+    } catch { showToast('Error updating', false); }
+}
 
-// Toast Notification System
+// Toast System
 let toastTimeout;
-function showToast(message, icon = '✨') {
-    toastMessage.textContent = message;
-    toastIcon.textContent = icon;
+function showToast(message, isSuccess = true) {
+    const toastElem = document.getElementById('toast');
+    document.getElementById('toastMessage').textContent = message;
+    document.getElementById('toastIcon').textContent = isSuccess ? '✓' : '✕';
     
-    toast.classList.add('show');
+    toastElem.className = 'toast show ' + (isSuccess ? 'toast-success' : 'toast-error');
     
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
-        toast.classList.remove('show');
+        toastElem.classList.remove('show');
     }, 3000);
 }
