@@ -78,12 +78,24 @@
 
     </div>
 
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal confirm-modal">
+            <h3 id="confirmModalTitle">Are you sure?</h3>
+            <p id="confirmModalMessage" style="color: var(--text-secondary); margin-top: 1rem; margin-bottom: 2rem;">This action cannot be undone.</p>
+            <div class="form-row" style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn-outline" id="confirmCancelBtn" style="padding: 0.6rem 1.5rem; width: auto;">Cancel</button>
+                <button class="btn-primary" id="confirmActionBtn" style="background: var(--danger); box-shadow: none; width: auto;">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">
         <span id="toastIcon">✓</span>
         <span id="toastMessage">Success</span>
     </div>
 
-    <script src="/app.js?v=3"></script>
+    <script src="/app.js?v=4"></script>
 </body>
 </html>

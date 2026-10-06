@@ -240,7 +240,9 @@ window.openServiceModal = function(service = null) {
 window.closeServiceModal = function() { document.getElementById('serviceModal').classList.remove('active'); }
 
 window.deleteService = async function(id) {
-    if(!confirm('Delete this service?')) return;
+    const confirmed = await confirmAction('Delete Service', 'Are you sure you want to delete this service? This cannot be undone.');
+    if(!confirmed) return;
+    
     try {
         await fetch(`${API_BASE}/services/${id}`, { method: 'DELETE' });
         showToast('Service deleted', true);
@@ -352,7 +354,9 @@ window.openAvailModal = function(a = null) {
 window.closeAvailModal = function() { document.getElementById('availModal').classList.remove('active'); }
 
 window.deleteAvail = async function(id) { 
-    if(!confirm('Delete this availability slot?')) return;
+    const confirmed = await confirmAction('Delete Availability', 'Are you sure you want to delete this availability slot?');
+    if(!confirmed) return;
+
     try {
         await fetch(`${API_BASE}/availability/${id}`, { method: 'DELETE' });
         showToast('Deleted slot successfully', true); 
@@ -525,4 +529,36 @@ function showToast(message, isSuccess = true) {
     toastTimeout = setTimeout(() => {
         toastElem.classList.remove('show');
     }, 3000);
+}
+
+// Custom Confirm Dialog
+function confirmAction(title, message) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        document.getElementById('confirmModalTitle').textContent = title;
+        document.getElementById('confirmModalMessage').textContent = message;
+        
+        const cancelBtn = document.getElementById('confirmCancelBtn');
+        const actionBtn = document.getElementById('confirmActionBtn');
+        
+        modal.classList.add('active');
+
+        const handleCancel = () => {
+            cleanup();
+            resolve(false);
+        };
+        const handleConfirm = () => {
+            cleanup();
+            resolve(true);
+        };
+
+        function cleanup() {
+            modal.classList.remove('active');
+            cancelBtn.removeEventListener('click', handleCancel);
+            actionBtn.removeEventListener('click', handleConfirm);
+        }
+
+        cancelBtn.addEventListener('click', handleCancel);
+        actionBtn.addEventListener('click', handleConfirm);
+    });
 }
