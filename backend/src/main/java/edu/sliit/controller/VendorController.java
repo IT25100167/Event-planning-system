@@ -49,6 +49,12 @@ public class VendorController {
         return ResponseEntity.ok(vendorManagementService.updateAvailability(availabilityDto));
     }
 
+    @DeleteMapping("/availability/{availabilityId}")
+    public ResponseEntity<Void> deleteAvailability(@PathVariable Integer availabilityId) {
+        vendorManagementService.deleteAvailability(availabilityId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{vendorId}/availability")
     public ResponseEntity<List<VendorAvailabilityDto>> getVendorAvailability(@PathVariable Integer vendorId) {
         return ResponseEntity.ok(vendorManagementService.getVendorAvailability(vendorId));

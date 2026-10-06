@@ -92,9 +92,15 @@ public class VendorManagementServiceImpl implements VendorManagementService {
         UserEntity vendor = userRepository.findById(availabilityDto.getVendorId())
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
 
-        VendorAvailabilityEntity entity = vendorAvailabilityRepository
-                .findByVendorUserIdAndSlotDate(vendor.getUserId(), availabilityDto.getSlotDate())
-                .orElse(new VendorAvailabilityEntity());
+        VendorAvailabilityEntity entity;
+        if (availabilityDto.getId() != null) {
+            entity = vendorAvailabilityRepository.findById(availabilityDto.getId())
+                    .orElse(new VendorAvailabilityEntity());
+        } else {
+            entity = vendorAvailabilityRepository
+                    .findByVendorUserIdAndSlotDate(vendor.getUserId(), availabilityDto.getSlotDate())
+                    .orElse(new VendorAvailabilityEntity());
+        }
 
         entity.setVendor(vendor);
         entity.setSlotDate(availabilityDto.getSlotDate());
@@ -104,6 +110,11 @@ public class VendorManagementServiceImpl implements VendorManagementService {
 
         VendorAvailabilityEntity saved = vendorAvailabilityRepository.save(entity);
         return mapToDto(saved);
+    }
+
+    @Override
+    public void deleteAvailability(Integer availabilityId) {
+        vendorAvailabilityRepository.deleteById(availabilityId);
     }
 
     @Override

@@ -19,6 +19,7 @@ public interface VendorManagementService {
 
     // 3. Availability Updates
     VendorAvailabilityDto updateAvailability(VendorAvailabilityDto availabilityDto);
+    void deleteAvailability(Integer availabilityId);
     List<VendorAvailabilityDto> getVendorAvailability(Integer vendorId);
 
     // 4 & 5. Booking and Payment tracking

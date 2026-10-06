@@ -6,7 +6,8 @@ const routes = {
     profile: renderProfile,
     services: renderServices,
     availability: renderAvailability,
-    bookings: renderBookings
+    bookings: renderBookings,
+    payments: renderPayments
 };
 
 const appRoot = document.getElementById('app-root');
@@ -110,10 +111,26 @@ async function renderProfile() {
                     <label>DESCRIPTION</label>
                     <textarea class="form-control" id="compDesc" rows="4">Fresh flower decorations</textarea>
                 </div>
-                <button type="button" class="btn-primary" onclick="showToast('Profile updated!', true)">SAVE</button>
+                <button type="button" class="btn-primary" onclick="updateProfile()">SAVE</button>
             </form>
         </div>
     `;
+}
+
+window.updateProfile = async function() {
+    const payload = {
+        name: document.getElementById('compName').value,
+        phoneNum: "0771234567", // Default mock since form doesn't have it
+        email: "vendor@ceyloncelebrations.com" // Default mock
+    };
+    try {
+        await fetch(`${API_BASE}/${VENDOR_ID}/profile`, {
+            method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+        });
+        showToast('Profile updated successfully!', true);
+    } catch(e) {
+        showToast('Error updating profile', false);
+    }
 }
 
 async function renderServices() {
@@ -315,8 +332,7 @@ async function fetchAndRenderAvail() {
                 <td>${a.blocked ? 'Yes' : 'No'}</td>
                 <td class="table-actions">
                     <button class="btn-text btn-edit" onclick='openAvailModal(${JSON.stringify(a)})'>Edit</button>
-                    <!-- Mock delete as we didn't build a backend endpoint for delete availability, so we just unblock it -->
-                    <button class="btn-text btn-delete" onclick='deleteAvail()'>Delete</button>
+                    <button class="btn-text btn-delete" onclick='deleteAvail(${a.id})'>Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -334,7 +350,15 @@ window.openAvailModal = function(a = null) {
 }
 
 window.closeAvailModal = function() { document.getElementById('availModal').classList.remove('active'); }
-window.deleteAvail = function() { showToast('Deleted slot successfully', true); fetchAndRenderAvail(); }
+
+window.deleteAvail = async function(id) { 
+    if(!confirm('Delete this availability slot?')) return;
+    try {
+        await fetch(`${API_BASE}/availability/${id}`, { method: 'DELETE' });
+        showToast('Deleted slot successfully', true); 
+        fetchAndRenderAvail(); 
+    } catch { showToast('Error deleting', false); }
+}
 
 
 async function renderBookings() {
@@ -378,9 +402,9 @@ async function fetchAndRenderBookings() {
                     <td>Silver catering</td>
                     <td class="status-badge status-requested">REQUESTED</td>
                     <td class="table-actions">
-                        <button class="btn-success">Confirm</button>
+                        <button class="btn-success" onclick="showToast('Booking Confirmed', true)">Confirm</button>
                         <input type="text" class="reject-input" placeholder="Reject reason">
-                        <button class="btn-text btn-delete">Reject</button>
+                        <button class="btn-text btn-delete" onclick="showToast('Booking Rejected', true)">Reject</button>
                     </td>
                 </tr>
                 <tr>
@@ -389,9 +413,9 @@ async function fetchAndRenderBookings() {
                     <td>—</td>
                     <td class="status-badge status-requested">REQUESTED</td>
                     <td class="table-actions">
-                        <button class="btn-success">Confirm</button>
+                        <button class="btn-success" onclick="showToast('Booking Confirmed', true)">Confirm</button>
                         <input type="text" class="reject-input" placeholder="Reject reason">
-                        <button class="btn-text btn-delete">Reject</button>
+                        <button class="btn-text btn-delete" onclick="showToast('Booking Rejected', true)">Reject</button>
                     </td>
                 </tr>
                 <tr>
@@ -400,7 +424,7 @@ async function fetchAndRenderBookings() {
                     <td>—</td>
                     <td class="status-badge status-confirmed">CONFIRMED</td>
                     <td class="table-actions">
-                        <button class="btn-text btn-delete">Delete</button>
+                        <button class="btn-text btn-delete" onclick="showToast('Booking Deleted', true)">Delete</button>
                     </td>
                 </tr>
             `;
@@ -411,11 +435,11 @@ async function fetchAndRenderBookings() {
             <tr>
                 <td>Event #${b.id}</td>
                 <td>${b.bookingDate}</td>
-                <td>${b.serviceId}</td>
+                <td>Service #${b.serviceId}</td>
                 <td class="status-badge">${b.status}</td>
                 <td class="table-actions">
                     ${b.status !== 'CONFIRMED' ? `<button class="btn-success" onclick="updateBooking(${b.id}, 'CONFIRMED')">Confirm</button>` : ''}
-                    ${b.status !== 'CANCELLED' ? `<button class="btn-text btn-delete" onclick="updateBooking(${b.id}, 'CANCELLED')">${b.status === 'CONFIRMED' ? 'Cancel' : 'Reject'}</button>` : ''}
+                    ${b.status !== 'CANCELLED' ? `<input type="text" class="reject-input" id="reject-${b.id}" placeholder="Reject reason"><button class="btn-text btn-delete" onclick="updateBooking(${b.id}, 'CANCELLED')">${b.status === 'CONFIRMED' ? 'Cancel' : 'Reject'}</button>` : ''}
                 </td>
             </tr>
         `).join('');
@@ -424,10 +448,68 @@ async function fetchAndRenderBookings() {
 
 window.updateBooking = async function(id, status) {
     try {
+        let reason = "";
+        if (status === 'CANCELLED' && document.getElementById(`reject-${id}`)) {
+            reason = document.getElementById(`reject-${id}`).value;
+        }
+        // Assuming backend gets updated to handle reason eventually, but for now we just change status
         await fetch(`${API_BASE}/bookings/${id}/status?status=${status}`, { method: 'PATCH' });
-        showToast('Booking updated', true);
+        showToast('Booking ' + status.toLowerCase(), true);
         fetchAndRenderBookings();
     } catch { showToast('Error updating', false); }
+}
+
+async function renderPayments() {
+    pageTitle.textContent = 'Payments';
+    appRoot.innerHTML = `
+        <h2 class="page-title" style="margin-bottom:2rem">Payments Tracker</h2>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>BOOKING ID</th>
+                        <th>DATE</th>
+                        <th>PAYMENT STATUS</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="paymentsTableBody">
+                    <tr><td colspan="4" style="text-align:center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    try {
+        const res = await fetch(`${API_BASE}/${VENDOR_ID}/bookings`);
+        const bookings = await res.json();
+        const tbody = document.getElementById('paymentsTableBody');
+        
+        if(bookings.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center">No payments to display.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = bookings.map(b => `
+            <tr>
+                <td>Booking #${b.id}</td>
+                <td>${b.bookingDate}</td>
+                <td class="status-badge">${b.paymentStatus || 'PENDING'}</td>
+                <td class="table-actions">
+                    ${b.paymentStatus !== 'PAID' ? `<button class="btn-success" onclick="markPaid(${b.id})">Mark as Paid</button>` : ''}
+                </td>
+            </tr>
+        `).join('');
+    } catch(e) {}
+}
+
+window.markPaid = async function(id) {
+    try {
+        await fetch(`${API_BASE}/bookings/${id}/payment-status?paymentStatus=PAID`, { method: 'PATCH' });
+        showToast('Payment marked as PAID', true);
+        renderPayments();
+    } catch { showToast('Error updating payment', false); }
 }
 
 // Toast System
