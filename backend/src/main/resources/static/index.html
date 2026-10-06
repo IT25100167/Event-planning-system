@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor & Service Allocation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <header class="glass-panel main-header">
+            <div class="header-content">
+                <h1>Vendor Dashboard</h1>
+                <p class="subtitle">Manage your services and availability</p>
+            </div>
+            <div class="vendor-profile">
+                <div class="avatar">V</div>
+                <span>Test Vendor</span>
+            </div>
+        </header>
+
+        <main class="dashboard-grid">
+            
+            <!-- Add Service Section -->
+            <section class="glass-panel form-section">
+                <div class="section-header">
+                    <h2>Add New Service</h2>
+                </div>
+                <form id="addServiceForm">
+                    <div class="form-group">
+                        <label for="serviceName">Service Name</label>
+                        <input type="text" id="serviceName" placeholder="e.g. Platinum Photography" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <option value="Catering">Catering</option>
+                                <option value="Photography">Photography</option>
+                                <option value="DECOR">Decoration</option>
+                                <option value="Music">Music & DJ</option>
+                                <option value="Venue">Venue</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="capacity">Capacity (Guests)</label>
+                            <input type="number" id="capacity" placeholder="e.g. 150" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="3" placeholder="Brief description of your service..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price (LKR)</label>
+                        <input type="number" id="price" placeholder="e.g. 50000" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="addServiceBtn">
+                        <span class="btn-text">Create Service</span>
+                        <div class="loader" style="display: none;"></div>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Availability Section -->
+            <section class="glass-panel form-section">
+                <div class="section-header">
+                    <h2>Manage Availability</h2>
+                </div>
+                <form id="addAvailabilityForm">
+                    <div class="form-group">
+                        <label for="slotDate">Select Date</label>
+                        <input type="date" id="slotDate" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startTime">Start Time</label>
+                            <input type="time" id="startTime" value="09:00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">End Time</label>
+                            <input type="time" id="endTime" value="18:00" required>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="blocked">
+                        <label for="blocked">Mark as Blocked / Unavailable</label>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-secondary" id="addAvailabilityBtn">
+                        <span class="btn-text">Save Availability</span>
+                        <div class="loader" style="display: none;"></div>
+                    </button>
+                </form>
+                
+                <div id="availabilityStatus" class="status-msg"></div>
+            </section>
+
+            <!-- My Services List -->
+            <section class="glass-panel list-section">
+                <div class="section-header">
+                    <h2>My Active Services</h2>
+                    <button id="refreshServicesBtn" class="btn-icon" title="Refresh">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="services-container" id="servicesContainer">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading services...</p>
+                    </div>
+                    <!-- Services injected here -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <span id="toastIcon">✨</span>
+            <p id="toastMessage">Action successful!</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
