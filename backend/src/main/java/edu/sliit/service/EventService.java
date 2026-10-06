@@ -15,4 +15,5 @@ public interface EventService {
     List<EventResponseDTO> getAllEvents();
     EventResponseDTO getEventById(Integer eventId);
     List<UserResponseDTO> getAllCoordinators();
+    List<EventResponseDTO> getEventsByCoordinator(Integer coordinatorId);
 }

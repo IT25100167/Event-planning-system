@@ -7,6 +7,7 @@ export interface EventResponse {
   eventDate: string; // LocalDate comes as string from API
   deadline: string;
   status: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  coordinatorId?: number;
   coordinatorName: string | null;
   notes: string | null;
 }
@@ -40,6 +41,28 @@ export interface RegisterRequest {
   role: 'OPERATIONS_MANAGER' | 'EVENT_COORDINATOR';
 }
 
+export interface CreateTaskRequest {
+  title: string;
+  description?: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH';
+  dueDate: string;
+  eventId: number;
+  assigneeId?: number;
+}
+
+// Task Response Type
+export interface TaskResponse {
+  id: number;
+  title: string;
+  description: string | null;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH';
+  dueDate: string;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  eventId: number;
+  eventName: string | null;
+  assigneeName: string | null;
+}
+
 // API Service
 class ApiService {
   private baseUrl: string;
@@ -66,12 +89,25 @@ class ApiService {
       const response = await fetch(url, config);
       
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.message || `HTTP error! status: ${response.status}`);
+        // Parse error response from backend
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = { message: `HTTP error! status: ${response.status}` };
+        }
+        
+        // Create error with response data attached
+        const error: any = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        error.response = {
+          status: response.status,
+          data: errorData
+        };
+        throw error;
       }
 
       return await response.json();
-    } catch (error) {
+    } catch (error: any) {
       console.error('API request failed:', error);
       throw error;
     }
@@ -129,6 +165,39 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify(data),
     });
+  }
+
+  // Task APIs
+  async createTask(data: CreateTaskRequest): Promise<TaskResponse> {
+    return this.request<TaskResponse>('/tasks', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getTasksByEvent(eventId: number): Promise<TaskResponse[]> {
+    return this.request<TaskResponse[]>(`/tasks/event/${eventId}`);
+  }
+
+  async getTasksByCoordinator(userId: number): Promise<TaskResponse[]> {
+    return this.request<TaskResponse[]>(`/tasks/coordinator/${userId}`);
+  }
+
+  async updateTaskStatus(taskId: number, status: string): Promise<TaskResponse> {
+    return this.request<TaskResponse>(`/tasks/${taskId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async deleteTask(taskId: number): Promise<void> {
+    await this.request<void>(`/tasks/${taskId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getEventsByCoordinator(coordinatorId: number): Promise<EventResponse[]> {
+    return this.request<EventResponse[]>(`/events/coordinator/${coordinatorId}`);
   }
 }
 

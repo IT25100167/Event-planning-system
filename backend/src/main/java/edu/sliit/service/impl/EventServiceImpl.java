@@ -114,13 +114,20 @@ public class EventServiceImpl implements EventService {
         }
 
         if (request.getEventDate() != null) {
-            if (request.getEventDate().isBefore(LocalDate.now())) {
+            // Date එක actually වෙනස් වෙනවා නම් විතරක් past date validation කරන්න
+            boolean dateChanged = !request.getEventDate().equals(event.getEventDate());
+            if (dateChanged && request.getEventDate().isBefore(LocalDate.now())) {
                 throw new ValidationException("Event date cannot be in the past");
             }
             event.setEventDate(request.getEventDate());
         }
 
         if (request.getDeadline() != null) {
+            // Deadline එකත් same logic එක
+            boolean deadlineChanged = !request.getDeadline().equals(event.getDeadline());
+            if (deadlineChanged && request.getDeadline().isBefore(LocalDate.now())) {
+                throw new ValidationException("Deadline cannot be in the past");
+            }
             event.setDeadline(request.getDeadline());
         }
 
@@ -145,6 +152,15 @@ public class EventServiceImpl implements EventService {
         eventRepository.delete(event);
     }
 
+    @Override
+    public List<EventResponseDTO> getEventsByCoordinator(Integer coordinatorId) {
+        return eventRepository.findAll()
+                .stream()
+                .filter(event -> event.getCoordinator().getUserId().equals(coordinatorId))
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     private EventResponseDTO mapToResponseDTO(EventEntity event) {
         return new EventResponseDTO(
                 event.getEventId(),
@@ -152,6 +168,7 @@ public class EventServiceImpl implements EventService {
                 event.getEventDate(),
                 event.getDeadline(),
                 event.getStatus(),
+                event.getCoordinator().getUserId(),
                 event.getCoordinator().getName(),
                 event.getNotes()
         );

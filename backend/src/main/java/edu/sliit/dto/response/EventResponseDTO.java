@@ -16,6 +16,7 @@ public class EventResponseDTO {
     private LocalDate eventDate;
     private LocalDate deadline;
     private EventStatus status;
+    private Integer coordinatorId;
     private String coordinatorName;
     private String notes;
 }

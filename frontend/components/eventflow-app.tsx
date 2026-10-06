@@ -54,7 +54,7 @@ export default function EventFlowApp() {
 
   if (publicView) return <><Landing onEnter={() => setShowLogin(true)} onBooking={() => setShowLogin(true)} />{showLogin && <LoginModal onClose={() => setShowLogin(false)} onLogin={(selectedRole) => { setRole(selectedRole); setShowLogin(false); setPublicView(false) }} />}</>
   return <RoleDashboard role={role} active={active} setActive={setActive} search={search} setSearch={setSearch} notify={notify} onPublic={() => setPublicView(true)} mobileNav={mobileNav} setMobileNav={setMobileNav} />
-  /* legacy dashboard retained below while the role-specific workspace is used */
+  
   return <div className={theme ? 'dark' : ''}><div className="min-h-screen bg-[#f7f8fc] text-[#1d2944]">
     <aside className={`fixed inset-y-0 left-0 z-40 w-[252px] border-r border-slate-200/80 bg-white px-4 py-5 transition-transform lg:translate-x-0 ${mobileNav ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="flex items-center justify-between px-2"><Logo /><button onClick={() => setMobileNav(false)} className="rounded-lg p-2 text-slate-400 lg:hidden"><X size={18}/></button></div>

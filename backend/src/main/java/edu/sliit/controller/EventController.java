@@ -61,4 +61,9 @@ public class EventController {
         eventService.deleteEvent(eventId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/coordinator/{coordinatorId}")
+    public ResponseEntity<List<EventResponseDTO>> getEventsByCoordinator(@PathVariable Integer coordinatorId) {
+        return ResponseEntity.ok(eventService.getEventsByCoordinator(coordinatorId));
+    }
 }
