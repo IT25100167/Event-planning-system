@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface VendorAvailabilityRepository extends JpaRepository<VendorAvailabilityEntity, Integer> {
     List<VendorAvailabilityEntity> findByVendorUserId(Integer vendorId);
-    Optional<VendorAvailabilityEntity> findByVendorUserIdAndDate(Integer vendorId, LocalDate date);
+    Optional<VendorAvailabilityEntity> findByVendorUserIdAndSlotDate(Integer vendorId, LocalDate slotDate);
 }

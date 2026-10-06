@@ -20,8 +20,14 @@ public class VendorServiceEntity {
     @JoinColumn(name = "vendor_id", nullable = false)
     private UserEntity vendor;
 
-    @Column(name = "service_name", nullable = false)
-    private String serviceName;
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "category", nullable = false)
+    private String category;
+
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
 
     @Column(name = "description")
     private String description;

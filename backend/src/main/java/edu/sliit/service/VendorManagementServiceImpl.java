@@ -51,7 +51,9 @@ public class VendorManagementServiceImpl implements VendorManagementService {
 
         VendorServiceEntity entity = new VendorServiceEntity();
         entity.setVendor(vendor);
-        entity.setServiceName(serviceDto.getServiceName());
+        entity.setName(serviceDto.getName());
+        entity.setCategory(serviceDto.getCategory() != null ? serviceDto.getCategory() : "Default");
+        entity.setCapacity(serviceDto.getCapacity() != null ? serviceDto.getCapacity() : 1);
         entity.setDescription(serviceDto.getDescription());
         entity.setPrice(serviceDto.getPrice());
 
@@ -63,8 +65,9 @@ public class VendorManagementServiceImpl implements VendorManagementService {
     public VendorServiceDto updateService(Integer serviceId, VendorServiceDto serviceDto) {
         VendorServiceEntity entity = vendorServiceRepository.findById(serviceId)
                 .orElseThrow(() -> new RuntimeException("Service not found"));
-
-        entity.setServiceName(serviceDto.getServiceName());
+        entity.setName(serviceDto.getName());
+        if (serviceDto.getCategory() != null) entity.setCategory(serviceDto.getCategory());
+        if (serviceDto.getCapacity() != null) entity.setCapacity(serviceDto.getCapacity());
         entity.setDescription(serviceDto.getDescription());
         entity.setPrice(serviceDto.getPrice());
 
@@ -90,12 +93,14 @@ public class VendorManagementServiceImpl implements VendorManagementService {
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
 
         VendorAvailabilityEntity entity = vendorAvailabilityRepository
-                .findByVendorUserIdAndDate(vendor.getUserId(), availabilityDto.getDate())
+                .findByVendorUserIdAndSlotDate(vendor.getUserId(), availabilityDto.getSlotDate())
                 .orElse(new VendorAvailabilityEntity());
 
         entity.setVendor(vendor);
-        entity.setDate(availabilityDto.getDate());
-        entity.setIsAvailable(availabilityDto.getIsAvailable());
+        entity.setSlotDate(availabilityDto.getSlotDate());
+        entity.setStartTime(availabilityDto.getStartTime() != null ? availabilityDto.getStartTime() : java.time.LocalTime.of(0, 0));
+        entity.setEndTime(availabilityDto.getEndTime() != null ? availabilityDto.getEndTime() : java.time.LocalTime.of(23, 59));
+        entity.setBlocked(availabilityDto.getBlocked() != null ? availabilityDto.getBlocked() : false);
 
         VendorAvailabilityEntity saved = vendorAvailabilityRepository.save(entity);
         return mapToDto(saved);
@@ -117,9 +122,9 @@ public class VendorManagementServiceImpl implements VendorManagementService {
                 .orElseThrow(() -> new RuntimeException("Coordinator not found"));
 
         // Conflict check
-        vendorAvailabilityRepository.findByVendorUserIdAndDate(service.getVendor().getUserId(), bookingDto.getBookingDate())
+        vendorAvailabilityRepository.findByVendorUserIdAndSlotDate(service.getVendor().getUserId(), bookingDto.getBookingDate())
                 .ifPresent(availability -> {
-                    if (!availability.getIsAvailable()) {
+                    if (availability.getBlocked()) {
                         throw new RuntimeException("Vendor is not available on this date");
                     }
                 });
@@ -146,12 +151,14 @@ public class VendorManagementServiceImpl implements VendorManagementService {
         // Automated schedule conflict management
         if (entity.getStatus() == BookingStatus.CONFIRMED) {
             VendorAvailabilityEntity availability = vendorAvailabilityRepository
-                    .findByVendorUserIdAndDate(entity.getService().getVendor().getUserId(), entity.getBookingDate())
+                    .findByVendorUserIdAndSlotDate(entity.getService().getVendor().getUserId(), entity.getBookingDate())
                     .orElse(new VendorAvailabilityEntity());
             
             availability.setVendor(entity.getService().getVendor());
-            availability.setDate(entity.getBookingDate());
-            availability.setIsAvailable(false); // Mark as unavailable once confirmed
+            availability.setSlotDate(entity.getBookingDate());
+            availability.setStartTime(java.time.LocalTime.of(0, 0));
+            availability.setEndTime(java.time.LocalTime.of(23, 59));
+            availability.setBlocked(true); // Mark as unavailable once confirmed
             vendorAvailabilityRepository.save(availability);
         }
         
@@ -180,7 +187,9 @@ public class VendorManagementServiceImpl implements VendorManagementService {
         return new VendorServiceDto(
                 entity.getId(),
                 entity.getVendor().getUserId(),
-                entity.getServiceName(),
+                entity.getName(),
+                entity.getCategory(),
+                entity.getCapacity(),
                 entity.getDescription(),
                 entity.getPrice()
         );
@@ -190,8 +199,10 @@ public class VendorManagementServiceImpl implements VendorManagementService {
         return new VendorAvailabilityDto(
                 entity.getId(),
                 entity.getVendor().getUserId(),
-                entity.getDate(),
-                entity.getIsAvailable()
+                entity.getSlotDate(),
+                entity.getStartTime(),
+                entity.getEndTime(),
+                entity.getBlocked()
         );
     }
 

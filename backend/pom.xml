@@ -13,7 +13,7 @@
     </parent>
 
     <groupId>edu.sliit</groupId>
-    <artifactId>hotel-reservation-system</artifactId>
+    <artifactId>Eventplanning-system</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

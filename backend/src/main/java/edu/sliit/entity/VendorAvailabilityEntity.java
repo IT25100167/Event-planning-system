@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -22,9 +23,15 @@ public class VendorAvailabilityEntity {
     @JoinColumn(name = "vendor_id", nullable = false)
     private UserEntity vendor;
 
-    @Column(name = "available_date", nullable = false)
-    private LocalDate date;
+    @Column(name = "slot_date", nullable = false)
+    private LocalDate slotDate;
 
-    @Column(name = "is_available", nullable = false)
-    private Boolean isAvailable;
+    @Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
+
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
+
+    @Column(name = "blocked", nullable = false)
+    private Boolean blocked;
 }
