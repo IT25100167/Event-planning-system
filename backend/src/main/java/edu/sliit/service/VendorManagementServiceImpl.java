@@ -27,6 +27,13 @@ public class VendorManagementServiceImpl implements VendorManagementService {
     private final ServiceBookingRepository serviceBookingRepository;
 
     @Override
+    public VendorProfileUpdateDto getVendorProfile(Integer vendorId) {
+        UserEntity user = userRepository.findById(vendorId)
+                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+        return new VendorProfileUpdateDto(user.getName(), user.getPhoneNum(), user.getEmail());
+    }
+
+    @Override
     public VendorProfileUpdateDto updateVendorProfile(Integer vendorId, VendorProfileUpdateDto updateDto) {
         UserEntity user = userRepository.findById(vendorId)
                 .orElseThrow(() -> new RuntimeException("Vendor not found"));
@@ -77,7 +84,11 @@ public class VendorManagementServiceImpl implements VendorManagementService {
 
     @Override
     public void deleteService(Integer serviceId) {
-        vendorServiceRepository.deleteById(serviceId);
+        try {
+            vendorServiceRepository.deleteById(serviceId);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new RuntimeException("Cannot delete service because it has active bookings.");
+        }
     }
 
     @Override

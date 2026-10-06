@@ -18,6 +18,11 @@ public class VendorController {
 
     private final VendorManagementService vendorManagementService;
 
+    @GetMapping("/{vendorId}/profile")
+    public ResponseEntity<VendorProfileUpdateDto> getProfile(@PathVariable Integer vendorId) {
+        return ResponseEntity.ok(vendorManagementService.getVendorProfile(vendorId));
+    }
+
     @PutMapping("/{vendorId}/profile")
     public ResponseEntity<VendorProfileUpdateDto> updateProfile(@PathVariable Integer vendorId, @RequestBody VendorProfileUpdateDto updateDto) {
         return ResponseEntity.ok(vendorManagementService.updateVendorProfile(vendorId, updateDto));

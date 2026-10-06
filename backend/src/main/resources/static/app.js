@@ -61,8 +61,8 @@ async function renderDashboard() {
         <div class="dashboard-cards">
             <div class="card">
                 <div class="card-label">COMPANY</div>
-                <div class="card-value">Nethra Flowers</div>
-                <div style="color: var(--text-secondary); font-size: 0.9rem">Decoration · Colombo</div>
+                <div class="card-value" id="dash-company-name">...</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem">Contact: <span id="dash-company-phone">...</span></div>
             </div>
             <div class="card">
                 <div class="card-label">SERVICES</div>
@@ -77,14 +77,18 @@ async function renderDashboard() {
         </div>
     `;
 
-    // Fetch counts
+    // Fetch counts and profile
     try {
-        const [services, bookings] = await Promise.all([
+        const [services, bookings, profile] = await Promise.all([
             fetch(`${API_BASE}/${VENDOR_ID}/services`).then(res => res.json()),
-            fetch(`${API_BASE}/${VENDOR_ID}/bookings`).then(res => res.json())
+            fetch(`${API_BASE}/${VENDOR_ID}/bookings`).then(res => res.json()),
+            fetch(`${API_BASE}/${VENDOR_ID}/profile`).then(res => res.json())
         ]);
         document.getElementById('dash-services').textContent = services.length || 0;
         document.getElementById('dash-bookings').textContent = bookings.length || 0;
+        document.getElementById('dash-company-name').textContent = profile.name || 'Vendor Name';
+        document.getElementById('dash-company-phone').textContent = profile.phoneNum || 'N/A';
+        document.querySelector('.user-name').textContent = profile.name || 'Vendor Name';
     } catch(e) {}
 }
 
@@ -97,7 +101,7 @@ async function renderProfile() {
             <form id="profileForm">
                 <div class="form-group">
                     <label>COMPANY NAME</label>
-                    <input type="text" class="form-control" id="compName" value="Nethra Flowers">
+                    <input type="text" class="form-control" id="compName">
                 </div>
                 <div class="form-group">
                     <label>CATEGORY</label>
@@ -115,6 +119,12 @@ async function renderProfile() {
             </form>
         </div>
     `;
+
+    try {
+        const res = await fetch(`${API_BASE}/${VENDOR_ID}/profile`);
+        const profile = await res.json();
+        document.getElementById('compName').value = profile.name || '';
+    } catch(e) {}
 }
 
 window.updateProfile = async function() {
@@ -128,6 +138,7 @@ window.updateProfile = async function() {
             method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
         });
         showToast('Profile updated successfully!', true);
+        document.querySelector('.user-name').textContent = payload.name;
     } catch(e) {
         showToast('Error updating profile', false);
     }
@@ -244,10 +255,11 @@ window.deleteService = async function(id) {
     if(!confirmed) return;
     
     try {
-        await fetch(`${API_BASE}/services/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_BASE}/services/${id}`, { method: 'DELETE' });
+        if(!res.ok) throw new Error("Cannot delete service because it has active bookings.");
         showToast('Service deleted', true);
         fetchAndRenderServices();
-    } catch { showToast('Error deleting', false); }
+    } catch(e) { showToast(e.message || 'Error deleting', false); }
 }
 
 async function renderAvailability() {
@@ -397,41 +409,8 @@ async function fetchAndRenderBookings() {
         const bookings = await res.json();
         const tbody = document.getElementById('bookingsTableBody');
         
-        // Mock data from screenshot if no bookings exist
         if(bookings.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td>Proposals & Surprises (Marry Me) — Ranidu Nethra</td>
-                    <td>2026-12-30</td>
-                    <td>Silver catering</td>
-                    <td class="status-badge status-requested">REQUESTED</td>
-                    <td class="table-actions">
-                        <button class="btn-success" onclick="showToast('Booking Confirmed', true)">Confirm</button>
-                        <input type="text" class="reject-input" placeholder="Reject reason">
-                        <button class="btn-text btn-delete" onclick="showToast('Booking Rejected', true)">Reject</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Engagements — Clara S</td>
-                    <td>2026-09-21</td>
-                    <td>—</td>
-                    <td class="status-badge status-requested">REQUESTED</td>
-                    <td class="table-actions">
-                        <button class="btn-success" onclick="showToast('Booking Confirmed', true)">Confirm</button>
-                        <input type="text" class="reject-input" placeholder="Reject reason">
-                        <button class="btn-text btn-delete" onclick="showToast('Booking Rejected', true)">Reject</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Birthday Parties — Clara S</td>
-                    <td>2026-09-20</td>
-                    <td>—</td>
-                    <td class="status-badge status-confirmed">CONFIRMED</td>
-                    <td class="table-actions">
-                        <button class="btn-text btn-delete" onclick="showToast('Booking Deleted', true)">Delete</button>
-                    </td>
-                </tr>
-            `;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center">No bookings found.</td></tr>`;
             return;
         }
 

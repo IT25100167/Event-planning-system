@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface VendorManagementService {
     // 1. Vendor Profile Management
+    VendorProfileUpdateDto getVendorProfile(Integer vendorId);
     VendorProfileUpdateDto updateVendorProfile(Integer vendorId, VendorProfileUpdateDto updateDto);
 
     // 2. Service Management
