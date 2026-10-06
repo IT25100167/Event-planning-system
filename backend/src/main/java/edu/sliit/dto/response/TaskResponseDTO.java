@@ -3,17 +3,14 @@ package edu.sliit.dto.response;
 import edu.sliit.entity.TaskPriority;
 import edu.sliit.entity.TaskStatus;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class TaskResponseDTO {
     private Integer id;
     private String title;
@@ -22,7 +19,6 @@ public class TaskResponseDTO {
     private LocalDate dueDate;
     private TaskStatus status;
     private Integer eventId;
-    private Integer assigneeId;
+    private String eventName;
     private String assigneeName;
-    private LocalDateTime createdAt;
 }

@@ -1,7 +1,6 @@
 package edu.sliit.controller;
 
 import edu.sliit.dto.request.CreateTaskRequestDTO;
-import edu.sliit.dto.request.UpdateTaskStatusRequestDTO;
 import edu.sliit.dto.response.TaskResponseDTO;
 import edu.sliit.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -10,18 +9,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tasks")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class TaskController {
 
     private final TaskService taskService;
 
     @PostMapping
     public ResponseEntity<TaskResponseDTO> createTask(@RequestBody CreateTaskRequestDTO request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(request));
+        TaskResponseDTO response = taskService.createTask(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/event/{eventId}")
@@ -29,15 +30,23 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasksByEvent(eventId));
     }
 
-    @GetMapping("/assignee/{assigneeId}")
-    public ResponseEntity<List<TaskResponseDTO>> getTasksByAssignee(@PathVariable Integer assigneeId) {
-        return ResponseEntity.ok(taskService.getTasksByAssignee(assigneeId));
+    @GetMapping("/coordinator/{userId}")
+    public ResponseEntity<List<TaskResponseDTO>> getTasksByCoordinator(@PathVariable Integer userId) {
+        return ResponseEntity.ok(taskService.getTasksByCoordinator(userId));
     }
 
-    @PatchMapping("/{taskId}/status")
-    public ResponseEntity<TaskResponseDTO> updateStatus(
+    @PutMapping("/{taskId}/status")
+    public ResponseEntity<TaskResponseDTO> updateTaskStatus(
             @PathVariable Integer taskId,
-            @RequestBody UpdateTaskStatusRequestDTO request) {
-        return ResponseEntity.ok(taskService.updateStatus(taskId, request));
+            @RequestBody Map<String, String> request) {
+        String status = request.get("status");
+        TaskResponseDTO response = taskService.updateTaskStatus(taskId, status);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer taskId) {
+        taskService.deleteTask(taskId);
+        return ResponseEntity.noContent().build();
     }
 }
