@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/event_planning_db
-    username: root
-    password: 1234
+    username: eventapp
+    password: eventapp123
 
   jpa:
     hibernate:
