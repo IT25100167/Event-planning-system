@@ -453,11 +453,12 @@ function App(){
 
   useEffect(() => { loadTasks(eventId); }, [eventId, loadTasks]);
 
-  const updateStatus = async (id, status) => {
+    const updateStatus = async (id, status) => {
     try{
-      await fetch(`${API_BASE}/tasks/${id}/status`, {
-        method:"PATCH", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ status })
+      const res = await fetch(`${API_BASE}/tasks/${id}/status`, {
+        method:"PUT", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ status })
       });
+      if(!res.ok){ alert("Could not update status (error " + res.status + ")."); }
       loadTasks(eventId);
     }catch(e){ alert("Could not update status — check the API is running."); }
   };
