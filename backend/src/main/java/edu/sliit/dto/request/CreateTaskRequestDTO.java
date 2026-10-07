@@ -17,4 +17,5 @@ public class CreateTaskRequestDTO {
     private LocalDate dueDate;
     private Integer eventId;
     private Integer assigneeId;
+    private Integer milestoneId;
 }

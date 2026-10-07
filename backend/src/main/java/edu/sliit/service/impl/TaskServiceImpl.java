@@ -3,18 +3,22 @@ package edu.sliit.service.impl;
 import edu.sliit.dto.request.CreateTaskRequestDTO;
 import edu.sliit.dto.response.TaskResponseDTO;
 import edu.sliit.entity.EventEntity;
+import edu.sliit.entity.MilestoneEntity;
 import edu.sliit.entity.TaskEntity;
 import edu.sliit.entity.TaskStatus;
 import edu.sliit.entity.UserEntity;
 import edu.sliit.exception.EventNotFoundException;
 import edu.sliit.exception.ValidationException;
 import edu.sliit.repository.EventRepository;
+import edu.sliit.repository.MilestoneRepository;
 import edu.sliit.repository.TaskRepository;
 import edu.sliit.repository.UserRepository;
+import edu.sliit.service.TaskNotificationService;
 import edu.sliit.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +29,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final MilestoneRepository milestoneRepository;
+    private final TaskNotificationService taskNotificationService;
 
     @Override
     public TaskResponseDTO createTask(CreateTaskRequestDTO request) {
@@ -36,6 +42,13 @@ public class TaskServiceImpl implements TaskService {
             throw new ValidationException("Event ID is required");
         }
 
+        if (request.getDueDate() == null) {
+            throw new ValidationException("Due date is required");
+        }
+        if (request.getDueDate().isBefore(LocalDate.now())) {
+            throw new ValidationException("Due date cannot be before today.");
+        }
+
         EventEntity event = eventRepository.findById(request.getEventId())
                 .orElseThrow(() -> new EventNotFoundException("Event not found with ID: " + request.getEventId()));
 
@@ -45,6 +58,15 @@ public class TaskServiceImpl implements TaskService {
                     .orElseThrow(() -> new ValidationException("Assignee not found with ID: " + request.getAssigneeId()));
         }
 
+        MilestoneEntity milestone = null;
+        if (request.getMilestoneId() != null) {
+            milestone = milestoneRepository.findById(request.getMilestoneId())
+                    .orElseThrow(() -> new ValidationException("Milestone not found with ID: " + request.getMilestoneId()));
+            if (!milestone.getEventId().equals(request.getEventId())) {
+                throw new ValidationException("Milestone does not belong to this event.");
+            }
+        }
+
         TaskEntity task = TaskEntity.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -52,10 +74,12 @@ public class TaskServiceImpl implements TaskService {
                 .dueDate(request.getDueDate())
                 .eventId(request.getEventId())
                 .assignee(assignee)
+                .milestone(milestone)
                 .status(TaskStatus.PENDING)
                 .build();
 
         TaskEntity savedTask = taskRepository.save(task);
+        taskNotificationService.notifyAssignee(savedTask);
         return mapToResponseDTO(savedTask, event);
     }
 
@@ -106,16 +130,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private TaskResponseDTO mapToResponseDTO(TaskEntity task, EventEntity event) {
-        return new TaskResponseDTO(
-                task.getId(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getPriority(),
-                task.getDueDate(),
-                task.getStatus(),
-                task.getEventId(),
-                event != null ? event.getEventName() : null,
-                task.getAssignee() != null ? task.getAssignee().getName() : null
-        );
+        return TaskResponseDTO.builder()
+                .id(task.getId())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .priority(task.getPriority())
+                .dueDate(task.getDueDate())
+                .status(task.getStatus())
+                .eventId(task.getEventId())
+                .eventName(event != null ? event.getEventName() : null)
+                .assigneeName(task.getAssignee() != null ? task.getAssignee().getName() : null)
+                .milestoneId(task.getMilestone() != null ? task.getMilestone().getId() : null)
+                .milestoneName(task.getMilestone() != null ? task.getMilestone().getName() : null)
+                .createdAt(task.getCreatedAt())
+                .build();
     }
 }
