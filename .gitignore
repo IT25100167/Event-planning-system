@@ -45,3 +45,4 @@ backups/
 
 # Local application configuration
 backend/src/main/resources/application.yml
+backend/test_backup.sql
