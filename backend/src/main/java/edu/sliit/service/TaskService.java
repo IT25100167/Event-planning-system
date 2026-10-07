@@ -11,4 +11,5 @@ public interface TaskService {
     List<TaskResponseDTO> getTasksByEvent(Integer eventId);
     List<TaskResponseDTO> getTasksByAssignee(Integer assigneeId);
     TaskResponseDTO updateStatus(Integer taskId, UpdateTaskStatusRequestDTO request);
+    void deleteTask(Integer taskId);
 }

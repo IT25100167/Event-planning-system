@@ -1,5 +1,7 @@
 package edu.sliit.service.impl;
 
+import edu.sliit.entity.MilestoneEntity;
+import edu.sliit.repository.MilestoneRepository;
 import edu.sliit.dto.request.CreateTaskRequestDTO;
 import edu.sliit.dto.request.UpdateTaskStatusRequestDTO;
 import edu.sliit.dto.response.TaskResponseDTO;
@@ -24,6 +26,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final TaskNotificationService taskNotificationService;
+    private final MilestoneRepository milestoneRepository;
 
     @Override
     public TaskResponseDTO createTask(CreateTaskRequestDTO request) {
@@ -36,6 +39,16 @@ public class TaskServiceImpl implements TaskService {
                             "Assignee not found with id: " + request.getAssigneeId()));
         }
 
+        MilestoneEntity milestone = null;
+        if (request.getMilestoneId() != null) {
+            milestone = milestoneRepository.findById(request.getMilestoneId())
+                    .orElseThrow(() -> new TaskNotFoundException(
+                            "Milestone not found with id: " + request.getMilestoneId()));
+            if (!milestone.getEventId().equals(request.getEventId())) {
+                throw new InvalidDueDateException("Milestone does not belong to this event.");
+            }
+        }
+
         TaskEntity task = TaskEntity.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -43,6 +56,7 @@ public class TaskServiceImpl implements TaskService {
                 .dueDate(request.getDueDate())
                 .eventId(request.getEventId())
                 .assignee(assignee)
+                .milestone(milestone)
                 .build();
 
         TaskEntity saved = taskRepository.save(task);
@@ -73,6 +87,14 @@ public class TaskServiceImpl implements TaskService {
         return toResponse(taskRepository.save(task));
     }
 
+    @Override
+    public void deleteTask(Integer taskId) {
+        if (!taskRepository.existsById(taskId)) {
+            throw new TaskNotFoundException("Task not found with id: " + taskId);
+        }
+        taskRepository.deleteById(taskId);
+    }
+
     private void validateDueDate(LocalDate dueDate, LocalDate eventEndDate) {
         if (dueDate.isBefore(LocalDate.now())) {
             throw new InvalidDueDateException("Due date cannot be before today.");
@@ -92,7 +114,9 @@ public class TaskServiceImpl implements TaskService {
                 .status(task.getStatus())
                 .eventId(task.getEventId())
                 .assigneeId(task.getAssignee() != null ? task.getAssignee().getUserId() : null)
-                .assigneeName(task.getAssignee() != null ? task.getAssignee().getEmail() : null)
+                .assigneeName(task.getAssignee() != null ? task.getAssignee().getName() : null)
+                .milestoneId(task.getMilestone() != null ? task.getMilestone().getId() : null)
+                .milestoneName(task.getMilestone() != null ? task.getMilestone().getName() : null)
                 .createdAt(task.getCreatedAt())
                 .build();
     }

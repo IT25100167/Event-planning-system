@@ -24,5 +24,7 @@ public class TaskResponseDTO {
     private Integer eventId;
     private Integer assigneeId;
     private String assigneeName;
+    private Integer milestoneId;
+    private String milestoneName;
     private LocalDateTime createdAt;
 }

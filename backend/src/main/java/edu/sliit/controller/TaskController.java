@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/tasks")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class TaskController {
 
     private final TaskService taskService;
@@ -39,5 +39,11 @@ public class TaskController {
             @PathVariable Integer taskId,
             @RequestBody UpdateTaskStatusRequestDTO request) {
         return ResponseEntity.ok(taskService.updateStatus(taskId, request));
+    }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer taskId) {
+        taskService.deleteTask(taskId);
+        return ResponseEntity.noContent().build();
     }
 }

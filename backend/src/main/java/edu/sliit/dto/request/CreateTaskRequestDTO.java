@@ -13,8 +13,8 @@ public class CreateTaskRequestDTO {
     private LocalDate dueDate;
     private Integer eventId;
     private Integer assigneeId;
+    private Integer milestoneId;
 
-    // Optional: pass the event's end date from the frontend until
-    // the Event module is merged, so we can still validate against it
+
     private LocalDate eventEndDate;
 }
