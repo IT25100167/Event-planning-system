@@ -25,7 +25,7 @@ public interface VendorManagementService {
 
     // 4 & 5. Booking and Payment tracking
     ServiceBookingDto createBooking(ServiceBookingDto bookingDto);
-    ServiceBookingDto updateBookingStatus(Integer bookingId, String status);
+    ServiceBookingDto updateBookingStatus(Integer bookingId, String status, String reason);
     ServiceBookingDto updatePaymentStatus(Integer bookingId, String paymentStatus);
     List<ServiceBookingDto> getVendorBookings(Integer vendorId);
 }

@@ -167,13 +167,15 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
     }
   };
 
-  const handlePayment = async (id: number) => {
+  const handleRejectBooking = async (id: number) => {
+    const reason = window.prompt("Please provide a reason for rejection:");
+    if (reason === null) return; // User cancelled
     try {
-      await fetch(`/api/vendor/bookings/${id}/payment-status?paymentStatus=PAID`, { method: 'PATCH' });
-      onNotify('Payment marked as PAID');
+      await fetch(`/api/vendor/bookings/${id}/status?status=CANCELLED&reason=${encodeURIComponent(reason)}`, { method: 'PATCH' });
+      onNotify(`Booking rejected`);
       fetchData();
     } catch {
-      onNotify('Error updating payment');
+      onNotify('Error updating status');
     }
   };
 
@@ -355,8 +357,12 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
                         <td className="p-4 text-slate-500">Service #{b.serviceId}</td>
                         <td className="p-4"><Badge tone={b.status === 'CONFIRMED' ? 'green' : b.status === 'CANCELLED' ? 'red' : 'amber'}>{b.status}</Badge></td>
                         <td className="p-4 text-right">
-                          {b.status !== 'CONFIRMED' && <button onClick={() => handleBookingStatus(b.id, 'CONFIRMED')} className="text-emerald-600 hover:text-emerald-800 mr-3 text-xs font-semibold">Confirm</button>}
-                          {b.status !== 'CANCELLED' && <button onClick={() => handleBookingStatus(b.id, 'CANCELLED')} className="text-red-600 hover:text-red-800 text-xs font-semibold">Reject</button>}
+                          {b.status !== 'CONFIRMED' && b.status !== 'CANCELLED' && (
+                            <button onClick={() => handleBookingStatus(b.id, 'CONFIRMED')} className="text-emerald-600 hover:text-emerald-800 mr-3 text-xs font-semibold">Confirm</button>
+                          )}
+                          {b.status !== 'CANCELLED' && (
+                            <button onClick={() => handleRejectBooking(b.id)} className="text-red-600 hover:text-red-800 text-xs font-semibold">Reject</button>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -373,7 +379,7 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
               <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50 text-xs text-slate-500">
-                    <tr><th className="p-4 font-semibold">BOOKING</th><th className="p-4 font-semibold">DATE</th><th className="p-4 font-semibold">PAYMENT STATUS</th><th className="p-4 font-semibold text-right">ACTIONS</th></tr>
+                    <tr><th className="p-4 font-semibold">BOOKING</th><th className="p-4 font-semibold">DATE</th><th className="p-4 font-semibold">PAYMENT STATUS</th></tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {bookings.map(b => (
@@ -381,12 +387,9 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
                         <td className="p-4 font-medium">#{b.id}</td>
                         <td className="p-4 text-slate-500">{b.bookingDate}</td>
                         <td className="p-4"><Badge tone={b.paymentStatus === 'PAID' ? 'green' : 'amber'}>{b.paymentStatus || 'PENDING'}</Badge></td>
-                        <td className="p-4 text-right">
-                          {b.paymentStatus !== 'PAID' && <button onClick={() => handlePayment(b.id)} className="text-emerald-600 hover:text-emerald-800 text-xs font-semibold">Mark as Paid</button>}
-                        </td>
                       </tr>
                     ))}
-                    {bookings.length === 0 && <tr><td colSpan={4} className="p-4 text-center text-slate-500">No payments found.</td></tr>}
+                    {bookings.length === 0 && <tr><td colSpan={3} className="p-4 text-center text-slate-500">No payments found.</td></tr>}
                   </tbody>
                 </table>
               </div>

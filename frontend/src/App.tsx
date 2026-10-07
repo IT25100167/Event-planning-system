@@ -44,26 +44,7 @@ function App() {
     case 'landing':
       return (
         <LandingPage 
-          onEnter={() => {
-            // Check if VENDOR logic should be simulated for dev
-            const isVendor = window.confirm('Login as Vendor? (Cancel for Operations Manager)');
-            if (isVendor) {
-              setUser({ 
-                userId: 1, 
-                name: 'Vendor Company', 
-                email: 'vendor@ceylon.com', 
-                role: 'VENDOR' 
-              });
-            } else {
-              setUser({ 
-                userId: 2, 
-                name: 'Operations Manager', 
-                email: 'manager@eventflow.com', 
-                role: 'OPERATIONS_MANAGER' 
-              });
-            }
-            setCurrentPage('dashboard');
-          }}
+          onEnter={() => setCurrentPage('login')}
           onBooking={() => setCurrentPage('register')}
         />
       );

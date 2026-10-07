@@ -71,8 +71,8 @@ public class VendorController {
     }
 
     @PatchMapping("/bookings/{bookingId}/status")
-    public ResponseEntity<ServiceBookingDto> updateBookingStatus(@PathVariable Integer bookingId, @RequestParam String status) {
-        return ResponseEntity.ok(vendorManagementService.updateBookingStatus(bookingId, status));
+    public ResponseEntity<ServiceBookingDto> updateBookingStatus(@PathVariable Integer bookingId, @RequestParam String status, @RequestParam(required = false) String reason) {
+        return ResponseEntity.ok(vendorManagementService.updateBookingStatus(bookingId, status, reason));
     }
 
     @PatchMapping("/bookings/{bookingId}/payment-status")

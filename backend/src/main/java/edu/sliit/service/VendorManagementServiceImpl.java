@@ -164,11 +164,16 @@ public class VendorManagementServiceImpl implements VendorManagementService {
     }
 
     @Override
-    public ServiceBookingDto updateBookingStatus(Integer bookingId, String status) {
+    public ServiceBookingDto updateBookingStatus(Integer bookingId, String status, String reason) {
         ServiceBookingEntity entity = serviceBookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
         
         entity.setStatus(BookingStatus.valueOf(status.toUpperCase()));
+        
+        if (status.equalsIgnoreCase("CANCELLED") && reason != null && !reason.trim().isEmpty()) {
+            String currentNotes = entity.getCommunicationNotes();
+            entity.setCommunicationNotes(currentNotes == null ? "Reason: " + reason : currentNotes + " | Reason: " + reason);
+        }
         
         // Automated schedule conflict management
         if (entity.getStatus() == BookingStatus.CONFIRMED) {
