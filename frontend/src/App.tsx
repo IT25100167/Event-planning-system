@@ -4,6 +4,7 @@ import LoginPage from './auth/LoginPage';
 import RegisterPage from './auth/RegisterPage';
 import { LoginSuccessData } from './auth/LoginPage';
 import OperationsManagerDashboard from './pages/dashboards/OperationsManagerDashboard';
+import VendorDashboard from './pages/dashboards/VendorDashboard';
 import { Bell, CheckCircle2, AlertTriangle, X } from 'lucide-react';
 
 type Page = 'landing' | 'login' | 'register' | 'dashboard';
@@ -44,14 +45,23 @@ function App() {
       return (
         <LandingPage 
           onEnter={() => {
-            // Temporarily go directly to dashboard (skip login for now)
-            // Team members will implement proper login later
-            setUser({ 
-              userId: 1, 
-              name: 'Operations Manager', 
-              email: 'manager@eventflow.com', 
-              role: 'OPERATIONS_MANAGER' 
-            });
+            // Check if VENDOR logic should be simulated for dev
+            const isVendor = window.confirm('Login as Vendor? (Cancel for Operations Manager)');
+            if (isVendor) {
+              setUser({ 
+                userId: 1, 
+                name: 'Vendor Company', 
+                email: 'vendor@ceylon.com', 
+                role: 'VENDOR' 
+              });
+            } else {
+              setUser({ 
+                userId: 2, 
+                name: 'Operations Manager', 
+                email: 'manager@eventflow.com', 
+                role: 'OPERATIONS_MANAGER' 
+              });
+            }
             setCurrentPage('dashboard');
           }}
           onBooking={() => setCurrentPage('register')}
@@ -84,10 +94,17 @@ function App() {
 
       return (
         <>
-          <OperationsManagerDashboard 
-            onNotify={notify}
-            onNavigateToPublic={() => setCurrentPage('landing')}
-          />
+          {user.role === 'VENDOR' ? (
+            <VendorDashboard 
+              onNotify={notify}
+              onNavigateToPublic={() => setCurrentPage('landing')}
+            />
+          ) : (
+            <OperationsManagerDashboard 
+              onNotify={notify}
+              onNavigateToPublic={() => setCurrentPage('landing')}
+            />
+          )}
           
           {/* Toast Notification */}
           {toast && (
