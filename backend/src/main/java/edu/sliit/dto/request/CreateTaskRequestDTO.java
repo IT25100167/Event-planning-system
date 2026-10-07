@@ -1,11 +1,15 @@
 package edu.sliit.dto.request;
 
 import edu.sliit.entity.TaskPriority;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateTaskRequestDTO {
     private String title;
     private String description;
@@ -14,7 +18,4 @@ public class CreateTaskRequestDTO {
     private Integer eventId;
     private Integer assigneeId;
     private Integer milestoneId;
-
-
-    private LocalDate eventEndDate;
 }

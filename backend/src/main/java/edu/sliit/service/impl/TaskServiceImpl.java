@@ -1,14 +1,16 @@
 package edu.sliit.service.impl;
 
-import edu.sliit.entity.MilestoneEntity;
-import edu.sliit.repository.MilestoneRepository;
 import edu.sliit.dto.request.CreateTaskRequestDTO;
-import edu.sliit.dto.request.UpdateTaskStatusRequestDTO;
 import edu.sliit.dto.response.TaskResponseDTO;
+import edu.sliit.entity.EventEntity;
+import edu.sliit.entity.MilestoneEntity;
 import edu.sliit.entity.TaskEntity;
+import edu.sliit.entity.TaskStatus;
 import edu.sliit.entity.UserEntity;
-import edu.sliit.exception.InvalidDueDateException;
-import edu.sliit.exception.TaskNotFoundException;
+import edu.sliit.exception.EventNotFoundException;
+import edu.sliit.exception.ValidationException;
+import edu.sliit.repository.EventRepository;
+import edu.sliit.repository.MilestoneRepository;
 import edu.sliit.repository.TaskRepository;
 import edu.sliit.repository.UserRepository;
 import edu.sliit.service.TaskNotificationService;
@@ -18,34 +20,50 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final TaskNotificationService taskNotificationService;
     private final MilestoneRepository milestoneRepository;
+    private final TaskNotificationService taskNotificationService;
 
     @Override
     public TaskResponseDTO createTask(CreateTaskRequestDTO request) {
-        validateDueDate(request.getDueDate(), request.getEventEndDate());
+        if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
+            throw new ValidationException("Task title is required");
+        }
+
+        if (request.getEventId() == null) {
+            throw new ValidationException("Event ID is required");
+        }
+
+        if (request.getDueDate() == null) {
+            throw new ValidationException("Due date is required");
+        }
+        if (request.getDueDate().isBefore(LocalDate.now())) {
+            throw new ValidationException("Due date cannot be before today.");
+        }
+
+        EventEntity event = eventRepository.findById(request.getEventId())
+                .orElseThrow(() -> new EventNotFoundException("Event not found with ID: " + request.getEventId()));
 
         UserEntity assignee = null;
         if (request.getAssigneeId() != null) {
             assignee = userRepository.findById(request.getAssigneeId())
-                    .orElseThrow(() -> new TaskNotFoundException(
-                            "Assignee not found with id: " + request.getAssigneeId()));
+                    .orElseThrow(() -> new ValidationException("Assignee not found with ID: " + request.getAssigneeId()));
         }
 
         MilestoneEntity milestone = null;
         if (request.getMilestoneId() != null) {
             milestone = milestoneRepository.findById(request.getMilestoneId())
-                    .orElseThrow(() -> new TaskNotFoundException(
-                            "Milestone not found with id: " + request.getMilestoneId()));
+                    .orElseThrow(() -> new ValidationException("Milestone not found with ID: " + request.getMilestoneId()));
             if (!milestone.getEventId().equals(request.getEventId())) {
-                throw new InvalidDueDateException("Milestone does not belong to this event.");
+                throw new ValidationException("Milestone does not belong to this event.");
             }
         }
 
@@ -57,54 +75,61 @@ public class TaskServiceImpl implements TaskService {
                 .eventId(request.getEventId())
                 .assignee(assignee)
                 .milestone(milestone)
+                .status(TaskStatus.PENDING)
                 .build();
 
-        TaskEntity saved = taskRepository.save(task);
-        taskNotificationService.notifyAssignee(saved);
-
-        return toResponse(saved);
+        TaskEntity savedTask = taskRepository.save(task);
+        taskNotificationService.notifyAssignee(savedTask);
+        return mapToResponseDTO(savedTask, event);
     }
 
     @Override
     public List<TaskResponseDTO> getTasksByEvent(Integer eventId) {
-        return taskRepository.findByEventId(eventId).stream()
-                .map(this::toResponse)
-                .toList();
+        EventEntity event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event not found with ID: " + eventId));
+
+        return taskRepository.findByEventId(eventId)
+                .stream()
+                .map(task -> mapToResponseDTO(task, event))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<TaskResponseDTO> getTasksByAssignee(Integer assigneeId) {
-        return taskRepository.findByAssignee_UserId(assigneeId).stream()
-                .map(this::toResponse)
-                .toList();
+    public List<TaskResponseDTO> getTasksByCoordinator(Integer userId) {
+        return taskRepository.findByAssigneeUserId(userId)
+                .stream()
+                .map(task -> {
+                    EventEntity event = eventRepository.findById(task.getEventId())
+                            .orElse(null);
+                    return mapToResponseDTO(task, event);
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    public TaskResponseDTO updateStatus(Integer taskId, UpdateTaskStatusRequestDTO request) {
+    public TaskResponseDTO updateTaskStatus(Integer taskId, String status) {
         TaskEntity task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
-        task.setStatus(request.getStatus());
-        return toResponse(taskRepository.save(task));
+                .orElseThrow(() -> new ValidationException("Task not found with ID: " + taskId));
+
+        try {
+            task.setStatus(TaskStatus.valueOf(status));
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid status: " + status);
+        }
+
+        TaskEntity updatedTask = taskRepository.save(task);
+        EventEntity event = eventRepository.findById(updatedTask.getEventId()).orElse(null);
+        return mapToResponseDTO(updatedTask, event);
     }
 
     @Override
     public void deleteTask(Integer taskId) {
-        if (!taskRepository.existsById(taskId)) {
-            throw new TaskNotFoundException("Task not found with id: " + taskId);
-        }
-        taskRepository.deleteById(taskId);
+        TaskEntity task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ValidationException("Task not found with ID: " + taskId));
+        taskRepository.delete(task);
     }
 
-    private void validateDueDate(LocalDate dueDate, LocalDate eventEndDate) {
-        if (dueDate.isBefore(LocalDate.now())) {
-            throw new InvalidDueDateException("Due date cannot be before today.");
-        }
-        if (eventEndDate != null && dueDate.isAfter(eventEndDate)) {
-            throw new InvalidDueDateException("Due date cannot be after the event date.");
-        }
-    }
-
-    private TaskResponseDTO toResponse(TaskEntity task) {
+    private TaskResponseDTO mapToResponseDTO(TaskEntity task, EventEntity event) {
         return TaskResponseDTO.builder()
                 .id(task.getId())
                 .title(task.getTitle())
@@ -113,7 +138,7 @@ public class TaskServiceImpl implements TaskService {
                 .dueDate(task.getDueDate())
                 .status(task.getStatus())
                 .eventId(task.getEventId())
-                .assigneeId(task.getAssignee() != null ? task.getAssignee().getUserId() : null)
+                .eventName(event != null ? event.getEventName() : null)
                 .assigneeName(task.getAssignee() != null ? task.getAssignee().getName() : null)
                 .milestoneId(task.getMilestone() != null ? task.getMilestone().getId() : null)
                 .milestoneName(task.getMilestone() != null ? task.getMilestone().getName() : null)
