@@ -8,4 +8,5 @@ import java.util.List;
 public interface ServiceBookingRepository extends JpaRepository<ServiceBookingEntity, Integer> {
     List<ServiceBookingEntity> findByServiceVendorUserId(Integer vendorId);
     List<ServiceBookingEntity> findByEventCoordinatorUserId(Integer coordinatorId);
+    boolean existsByServiceId(Integer serviceId);
 }

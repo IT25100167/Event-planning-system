@@ -84,11 +84,10 @@ public class VendorManagementServiceImpl implements VendorManagementService {
 
     @Override
     public void deleteService(Integer serviceId) {
-        try {
-            vendorServiceRepository.deleteById(serviceId);
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+        if (serviceBookingRepository.existsByServiceId(serviceId)) {
             throw new RuntimeException("Cannot delete service because it has active bookings.");
         }
+        vendorServiceRepository.deleteById(serviceId);
     }
 
     @Override

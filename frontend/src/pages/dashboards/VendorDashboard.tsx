@@ -56,6 +56,11 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
   const [showAvailModal, setShowAvailModal] = useState(false);
   const [availForm, setAvailForm] = useState({ id: '', date: '', start: '08:00', end: '17:00', blocked: false });
 
+  // Custom UI Modals for Confirm and Prompt
+  const [confirmDialog, setConfirmDialog] = useState<{isOpen: boolean, title: string, message: string, onConfirm: () => void}>({isOpen: false, title: '', message: '', onConfirm: () => {}});
+  const [promptDialog, setPromptDialog] = useState<{isOpen: boolean, title: string, message: string, onSubmit: (val: string) => void}>({isOpen: false, title: '', message: '', onSubmit: () => {}});
+  const [promptInput, setPromptInput] = useState('');
+
   const fetchData = async () => {
     try {
       const [profRes, servRes, bookRes, availRes] = await Promise.all([
@@ -110,16 +115,25 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
     }
   };
 
-  const handleDeleteService = async (id: number) => {
-    if(!window.confirm('Delete this service?')) return;
-    try {
-      const res = await fetch(`/api/vendor/services/${id}`, { method: 'DELETE' });
-      if(!res.ok) throw new Error("Cannot delete because of active bookings.");
-      onNotify('Service deleted');
-      fetchData();
-    } catch(e: any) {
-      onNotify(e.message || 'Error deleting');
-    }
+  const handleDeleteService = (id: number) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete Service',
+      message: 'Are you sure you want to delete this service?',
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`/api/vendor/services/${id}`, { method: 'DELETE' });
+          if(!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || "Cannot delete because of active bookings.");
+          }
+          onNotify('Service deleted');
+          fetchData();
+        } catch(e: any) {
+          onNotify(e.message || 'Error deleting');
+        }
+      }
+    });
   };
 
   const handleSaveAvail = async (e: any) => {
@@ -146,15 +160,21 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
     }
   };
 
-  const handleDeleteAvail = async (id: number) => {
-    if(!window.confirm('Delete this slot?')) return;
-    try {
-      await fetch(`/api/vendor/availability/${id}`, { method: 'DELETE' });
-      onNotify('Slot deleted');
-      fetchData();
-    } catch {
-      onNotify('Error deleting');
-    }
+  const handleDeleteAvail = (id: number) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete Availability',
+      message: 'Are you sure you want to delete this availability slot?',
+      onConfirm: async () => {
+        try {
+          await fetch(`/api/vendor/availability/${id}`, { method: 'DELETE' });
+          onNotify('Slot deleted');
+          fetchData();
+        } catch {
+          onNotify('Error deleting');
+        }
+      }
+    });
   };
 
   const handleBookingStatus = async (id: number, status: string) => {
@@ -167,16 +187,22 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
     }
   };
 
-  const handleRejectBooking = async (id: number) => {
-    const reason = window.prompt("Please provide a reason for rejection:");
-    if (reason === null) return; // User cancelled
-    try {
-      await fetch(`/api/vendor/bookings/${id}/status?status=CANCELLED&reason=${encodeURIComponent(reason)}`, { method: 'PATCH' });
-      onNotify(`Booking rejected`);
-      fetchData();
-    } catch {
-      onNotify('Error updating status');
-    }
+  const handleRejectBooking = (id: number) => {
+    setPromptInput('');
+    setPromptDialog({
+      isOpen: true,
+      title: 'Reject Booking',
+      message: 'Please provide a reason for rejection:',
+      onSubmit: async (reason: string) => {
+        try {
+          await fetch(`/api/vendor/bookings/${id}/status?status=CANCELLED&reason=${encodeURIComponent(reason)}`, { method: 'PATCH' });
+          onNotify(`Booking rejected`);
+          fetchData();
+        } catch {
+          onNotify('Error updating status');
+        }
+      }
+    });
   };
 
   const navItems = [
@@ -386,7 +412,7 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
                       <tr key={b.id} className="hover:bg-slate-50">
                         <td className="p-4 font-medium">#{b.id}</td>
                         <td className="p-4 text-slate-500">{b.bookingDate}</td>
-                        <td className="p-4"><Badge tone={b.paymentStatus === 'PAID' ? 'green' : 'amber'}>{b.paymentStatus || 'PENDING'}</Badge></td>
+                        <td className="p-4"><Badge tone={b.paymentStatus === 'PAID' ? 'green' : 'amber'}>{b.paymentStatus === 'PAID' ? 'RECEIVED' : 'PENDING'}</Badge></td>
                       </tr>
                     ))}
                     {bookings.length === 0 && <tr><td colSpan={3} className="p-4 text-center text-slate-500">No payments found.</td></tr>}
@@ -432,6 +458,35 @@ export default function VendorDashboard({ onNavigateToPublic, onNotify }: any) {
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setShowAvailModal(false)} className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
               <button type="submit" className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700">Save</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Custom Confirm Dialog */}
+      {confirmDialog.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="mb-2 text-lg font-bold">{confirmDialog.title}</h3>
+            <p className="text-sm text-slate-600 mb-6">{confirmDialog.message}</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setConfirmDialog({...confirmDialog, isOpen: false})} className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+              <button onClick={() => { confirmDialog.onConfirm(); setConfirmDialog({...confirmDialog, isOpen: false}); }} className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Prompt Dialog */}
+      {promptDialog.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+          <form onSubmit={(e) => { e.preventDefault(); promptDialog.onSubmit(promptInput); setPromptDialog({...promptDialog, isOpen: false}); }} className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="mb-2 text-lg font-bold">{promptDialog.title}</h3>
+            <p className="text-sm text-slate-600 mb-4">{promptDialog.message}</p>
+            <input autoFocus required value={promptInput} onChange={e => setPromptInput(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500 mb-6" />
+            <div className="flex justify-end gap-3">
+              <button type="button" onClick={() => setPromptDialog({...promptDialog, isOpen: false})} className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+              <button type="submit" className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700">Submit</button>
             </div>
           </form>
         </div>
