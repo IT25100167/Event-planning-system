@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class TaskResponseDTO {
     private Integer id;
     private String title;
@@ -22,7 +22,9 @@ public class TaskResponseDTO {
     private LocalDate dueDate;
     private TaskStatus status;
     private Integer eventId;
-    private Integer assigneeId;
+    private String eventName;
     private String assigneeName;
+    private Integer milestoneId;
+    private String milestoneName;
     private LocalDateTime createdAt;
 }

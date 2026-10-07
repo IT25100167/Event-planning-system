@@ -47,6 +47,10 @@ public class TaskEntity {
     @JoinColumn(name = "assignee_id")
     private UserEntity assignee;
 
+    @ManyToOne
+    @JoinColumn(name = "milestone_id")
+    private MilestoneEntity milestone;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
