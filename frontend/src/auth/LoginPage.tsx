@@ -47,34 +47,42 @@ export default function LoginPage({ onLoginSuccess, onNavigateToRegister }: Logi
     setError('');
 
     try {
-      // TODO: Replace with actual API call
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+      // Fake Authentication since Backend Auth isn't built yet by the team
+      await new Promise(resolve => setTimeout(resolve, 500)); // simulate network delay
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+      let data: any;
+
+      if (email.toLowerCase() === 'vendor@ceylon.com' && password === '1234') {
+        data = {
+          userId: 1,
+          name: 'Vendor Company',
+          email: 'vendor@ceylon.com',
+          role: 'VENDOR',
+          token: 'fake-jwt-token-vendor'
+        };
+      } else if (email.toLowerCase() === 'manager@eventflow.com' && password === '1234') {
+        data = {
+          userId: 2,
+          name: 'Operations Manager',
+          email: 'manager@eventflow.com',
+          role: 'OPERATIONS_MANAGER',
+          token: 'fake-jwt-token-manager'
+        };
+      } else {
+        throw new Error('Invalid credentials. Try vendor@ceylon.com or manager@eventflow.com with password 1234');
       }
 
-      const data = await response.json();
+      const role = data.role === 'VENDOR' ? 'VENDOR' : 'operations';
 
-      // Map backend role to frontend role
-      const role = data.role === 'OPERATIONS_MANAGER' ? 'operations' : 'coordinator';
-
-      // Store token
       if (data.token) {
         localStorage.setItem('authToken', data.token);
       }
 
-      // Call parent callback
       onLoginSuccess({
         userId: data.userId,
         name: data.name,
         email: data.email,
-        role: role,
+        role: role as any,
         token: data.token
       });
 
@@ -93,7 +101,9 @@ export default function LoginPage({ onLoginSuccess, onNavigateToRegister }: Logi
             Sign in to EventFlow
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Placeholder - Your team will implement this!
+            <strong>Vendor:</strong> vendor@ceylon.com / 1234
+            <br />
+            <strong>Manager:</strong> manager@eventflow.com / 1234
           </p>
         </div>
 
