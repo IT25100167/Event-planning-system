@@ -1,44 +1,44 @@
 import React from 'react'
 
-interface VendorDashboardProps {
+interface CustomerDashboardProps {
     onNotify?: (message: string) => void
     onNavigateToPublic?: () => void
 }
 
-export default function VendorDashboard({
-                                            onNotify,
-                                            onNavigateToPublic
-                                        }: VendorDashboardProps) {
+export default function CustomerDashboard({
+                                              onNotify,
+                                              onNavigateToPublic
+                                          }: CustomerDashboardProps) {
 
     const cards = [
         {
-            title: 'My Services',
-            description: 'View and manage the services you provide for events.',
-            icon: '🛠️'
+            title: 'Browse Event Packages',
+            description: 'Explore available packages for weddings, conferences, seminars and other events.',
+            icon: '📦'
         },
         {
-            title: 'Availability',
-            description: 'Update your service availability and available dates.',
+            title: 'My Bookings',
+            description: 'View your submitted event bookings and their current status.',
             icon: '📅'
         },
         {
-            title: 'Booking Requests',
-            description: 'View incoming event booking requests from customers.',
-            icon: '📩'
+            title: 'Submit Booking',
+            description: 'Submit a new event booking request with the required details.',
+            icon: '📝'
         },
         {
-            title: 'Confirmed Bookings',
-            description: 'View and manage your confirmed event bookings.',
-            icon: '✅'
+            title: 'Upload Documents',
+            description: 'Upload documents required for your event booking.',
+            icon: '📎'
         },
         {
-            title: 'Service Updates',
-            description: 'Update service details, pricing and availability information.',
-            icon: '✏️'
+            title: 'Payments',
+            description: 'View payment information and manage your event payments.',
+            icon: '💳'
         },
         {
             title: 'Notifications',
-            description: 'View booking confirmations and important updates.',
+            description: 'View booking confirmations, updates and important notifications.',
             icon: '🔔'
         }
     ]
@@ -55,21 +55,21 @@ export default function VendorDashboard({
                 <div className="max-w-7xl mx-auto">
 
                     <p className="text-sm text-violet-600 font-semibold uppercase tracking-wide">
-                        Vendor Management
+                        Customer Portal
                     </p>
 
                     <h1 className="text-3xl font-bold text-slate-900 mt-1">
-                        Vendor Dashboard
+                        Customer Dashboard
                     </h1>
 
                     <p className="text-slate-500 mt-2">
-                        Manage your services, availability and event booking requests.
+                        Browse event packages, manage bookings, documents and payments.
                     </p>
 
                 </div>
             </div>
 
-            {/* Dashboard Content */}
+            {/* Content */}
             <div className="max-w-7xl mx-auto px-6 py-8">
 
                 {/* Summary */}
@@ -77,7 +77,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            My Services
+                            My Bookings
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -86,7 +86,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Pending Requests
+                            Pending Bookings
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -95,7 +95,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Confirmed Bookings
+                            Confirmed Events
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -104,7 +104,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Available Services
+                            Pending Payments
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -113,9 +113,9 @@ export default function VendorDashboard({
 
                 </div>
 
-                {/* Vendor Functions */}
+                {/* Customer Functions */}
                 <h2 className="text-xl font-bold text-slate-900 mb-4">
-                    Vendor Functions
+                    Customer Functions
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

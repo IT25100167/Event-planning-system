@@ -1,45 +1,45 @@
 import React from 'react'
 
-interface VendorDashboardProps {
+interface FinanceOfficerDashboardProps {
     onNotify?: (message: string) => void
     onNavigateToPublic?: () => void
 }
 
-export default function VendorDashboard({
-                                            onNotify,
-                                            onNavigateToPublic
-                                        }: VendorDashboardProps) {
+export default function FinanceOfficerDashboard({
+                                                    onNotify,
+                                                    onNavigateToPublic
+                                                }: FinanceOfficerDashboardProps) {
 
     const cards = [
         {
-            title: 'My Services',
-            description: 'View and manage the services you provide for events.',
-            icon: '🛠️'
+            title: 'Quotations',
+            description: 'Prepare, review and manage event quotations.',
+            icon: '📄'
         },
         {
-            title: 'Availability',
-            description: 'Update your service availability and available dates.',
-            icon: '📅'
+            title: 'Invoices',
+            description: 'Create and manage customer invoices and billing records.',
+            icon: '🧾'
         },
         {
-            title: 'Booking Requests',
-            description: 'View incoming event booking requests from customers.',
-            icon: '📩'
+            title: 'Payments',
+            description: 'Track customer payments and payment status.',
+            icon: '💳'
         },
         {
-            title: 'Confirmed Bookings',
-            description: 'View and manage your confirmed event bookings.',
-            icon: '✅'
+            title: 'Budgets',
+            description: 'Monitor event budgets and financial allocations.',
+            icon: '💰'
         },
         {
-            title: 'Service Updates',
-            description: 'Update service details, pricing and availability information.',
-            icon: '✏️'
+            title: 'Financial Reports',
+            description: 'Review income, expenses and financial summaries.',
+            icon: '📊'
         },
         {
-            title: 'Notifications',
-            description: 'View booking confirmations and important updates.',
-            icon: '🔔'
+            title: 'Outstanding Payments',
+            description: 'Identify unpaid and overdue customer payments.',
+            icon: '⚠️'
         }
     ]
 
@@ -55,29 +55,29 @@ export default function VendorDashboard({
                 <div className="max-w-7xl mx-auto">
 
                     <p className="text-sm text-violet-600 font-semibold uppercase tracking-wide">
-                        Vendor Management
+                        Financial Management
                     </p>
 
                     <h1 className="text-3xl font-bold text-slate-900 mt-1">
-                        Vendor Dashboard
+                        Finance Officer Dashboard
                     </h1>
 
                     <p className="text-slate-500 mt-2">
-                        Manage your services, availability and event booking requests.
+                        Manage quotations, invoices, payments, budgets and financial reports.
                     </p>
 
                 </div>
             </div>
 
-            {/* Dashboard Content */}
+            {/* Content */}
             <div className="max-w-7xl mx-auto px-6 py-8">
 
-                {/* Summary */}
+                {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            My Services
+                            Total Invoices
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -86,7 +86,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Pending Requests
+                            Paid Payments
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -95,7 +95,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Confirmed Bookings
+                            Pending Payments
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -104,7 +104,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Available Services
+                            Active Budgets
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -113,9 +113,9 @@ export default function VendorDashboard({
 
                 </div>
 
-                {/* Vendor Functions */}
+                {/* Finance Functions */}
                 <h2 className="text-xl font-bold text-slate-900 mb-4">
-                    Vendor Functions
+                    Finance Functions
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -148,15 +148,15 @@ export default function VendorDashboard({
 
                 </div>
 
-                {/* Recent Activity */}
+                {/* Recent Financial Activity */}
                 <div className="mt-8 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
 
                     <h2 className="text-lg font-bold text-slate-900">
-                        Recent Activity
+                        Recent Financial Activity
                     </h2>
 
                     <div className="mt-5 text-sm text-slate-500 text-center py-8">
-                        No recent activity available.
+                        No recent financial activity available.
                     </div>
 
                 </div>

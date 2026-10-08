@@ -6,7 +6,7 @@ import {
   Users, WalletCards, X, Zap, BarChart3, Building2, CheckCircle2, AlertTriangle
 } from 'lucide-react'
 import { apiService, EventResponse, UserResponse, AssignEventRequest } from '../../services/api'
-
+import { LoginSuccessData } from '../../auth/LoginPage'
 // Logo Component
 function Logo({ light = false }: { light?: boolean }) {
   return (
@@ -86,11 +86,16 @@ function convertEventToFrontendFormat(event: EventResponse): EventType {
 }
 
 interface OperationsManagerDashboardProps {
+  user: LoginSuccessData
   onNavigateToPublic: () => void
   onNotify: (message: string) => void
 }
 
-export default function OperationsManagerDashboard({ onNavigateToPublic, onNotify }: OperationsManagerDashboardProps) {
+export default function OperationsManagerDashboard({
+                                                     user,
+                                                     onNavigateToPublic,
+                                                     onNotify
+                                                   }: OperationsManagerDashboardProps) {
   const [active, setActive] = useState('Dashboard')
   const [mobileNav, setMobileNav] = useState(false)
   const [search, setSearch] = useState('')
@@ -383,32 +388,55 @@ export default function OperationsManagerDashboard({ onNavigateToPublic, onNotif
           </button>
         </div>
         <div className="mt-8 rounded-2xl bg-[#f5f3ff] p-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#6d55ed]">Current role</p>
-          <p className="mt-2 text-sm font-semibold">Event Operations Manager</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#6d55ed]">
+            Current role
+          </p>
+          <p className="mt-2 text-sm font-semibold">{user.role}</p>
           <p className="mt-1 text-[11px] text-slate-500">All workspace access</p>
         </div>
+
         <p className="mb-2 mt-8 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Workspace</p>
         <nav className="space-y-1">
           {managerNav.map(([label, Icon]: any) => (
-            <button key={label} onClick={() => {setActive(label);setMobileNav(false)}} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-semibold ${active === label ? 'bg-[#eeeaff] text-[#6048d7]' : 'text-slate-500 hover:bg-slate-50'}`}>
-              <Icon size={16}/>
-              {label}
-              {label === 'Notifications' && <span className="ml-auto h-2 w-2 rounded-full bg-rose-500"/>}
-            </button>
+              <button
+                  key={label}
+                  onClick={() => {
+                    setActive(label)
+                    setMobileNav(false)
+                  }}
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-semibold ${
+                      active === label
+                          ? 'bg-[#eeeaff] text-[#6048d7]'
+                          : 'text-slate-500 hover:bg-slate-50'
+                  }`}
+              >
+                <Icon size={16} />
+                {label}
+
+                {label === 'Notifications' && (
+                    <span className="ml-auto h-2 w-2 rounded-full bg-rose-500" />
+                )}
+              </button>
           ))}
         </nav>
         <div className="absolute bottom-5 left-4 right-4 border-t border-slate-100 pt-4">
           <div className="flex items-center gap-3">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-[#dce9ff] text-xs font-bold text-[#4165a5]">
-              SC
-            </div>
+          {user.name
+            ?.trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(part => part.charAt(0).toUpperCase())
+            .join('') || 'U'}
+          </div>
             <div>
-              <p className="text-xs font-semibold">Sarah Chen</p>
-              <p className="text-[10px] text-slate-500">Operations Manager</p>
+              <p className="text-xs font-semibold">{user.name}</p>
+              <p className="text-[10px] text-slate-500">{user.role}</p>
             </div>
           </div>
         </div>
-      </aside>
+
+        </aside>
 
       {/* Main Content */}
       <div className="lg:pl-[260px]">

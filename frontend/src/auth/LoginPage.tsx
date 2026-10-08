@@ -1,26 +1,19 @@
 import React, { useState } from 'react';
+import { auth, BackendRole } from '../services/api';
 
 /**
  * 🔐 LOGIN PAGE
- * 
- * TODO: Your team members will implement this!
- * 
- * Requirements:
- * - Email & Password inputs
- * - Form validation
- * - Backend API call to POST /auth/login
- * - Store JWT token in localStorage
- * - Call onLoginSuccess with user data
- * 
- * Backend Response Expected:
- * {
- *   userId: number,
- *   name: string,
- *   email: string,
- *   role: 'OPERATIONS_MANAGER' | 'EVENT_COORDINATOR',
- *   token: string
- * }
+ * Connected to backend POST /auth/login
+ * Preserves exact backend roles:
+ * - ADMIN
+ * - OPERATIONS_MANAGER
+ * - EVENT_COORDINATOR
+ * - FINANCE_OFFICER
+ * - VENDOR
+ * - CUSTOMER
  */
+
+export type { BackendRole };
 
 interface LoginPageProps {
   onLoginSuccess: (userData: LoginSuccessData) => void;
@@ -31,7 +24,8 @@ export interface LoginSuccessData {
   userId: number;
   name: string;
   email: string;
-  role: 'operations' | 'coordinator';
+  phoneNum?: string | null;
+  role: BackendRole;
   token?: string;
 }
 
@@ -47,47 +41,29 @@ export default function LoginPage({ onLoginSuccess, onNavigateToRegister }: Logi
     setError('');
 
     try {
-      // Fake Authentication since Backend Auth isn't built yet by the team
-      await new Promise(resolve => setTimeout(resolve, 500)); // simulate network delay
+      const data = await auth.login({ email, password });
 
-      let data: any;
-
-      if (email.toLowerCase() === 'vendor@ceylon.com' && password === '1234') {
-        data = {
-          userId: 1,
-          name: 'Vendor Company',
-          email: 'vendor@ceylon.com',
-          role: 'VENDOR',
-          token: 'fake-jwt-token-vendor'
-        };
-      } else if (email.toLowerCase() === 'manager@eventflow.com' && password === '1234') {
-        data = {
-          userId: 2,
-          name: 'Operations Manager',
-          email: 'manager@eventflow.com',
-          role: 'OPERATIONS_MANAGER',
-          token: 'fake-jwt-token-manager'
-        };
-      } else {
-        throw new Error('Invalid credentials. Try vendor@ceylon.com or manager@eventflow.com with password 1234');
-      }
-
-      const role = data.role === 'VENDOR' ? 'VENDOR' : 'operations';
-
+      // Consistently store JWT token
       if (data.token) {
         localStorage.setItem('authToken', data.token);
       }
 
-      onLoginSuccess({
+      // Store returned user information in localStorage
+      const userData: LoginSuccessData = {
         userId: data.userId,
         name: data.name,
         email: data.email,
-        role: role as any,
-        token: data.token
-      });
+        phoneNum: data.phoneNum,
+        role: data.role,
+        token: data.token,
+      };
+      localStorage.setItem('user', JSON.stringify(userData));
+
+      // Call parent callback
+      onLoginSuccess(userData);
 
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -101,9 +77,7 @@ export default function LoginPage({ onLoginSuccess, onNavigateToRegister }: Logi
             Sign in to EventFlow
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            <strong>Vendor:</strong> vendor@ceylon.com / 1234
-            <br />
-            <strong>Manager:</strong> manager@eventflow.com / 1234
+            Enter your credentials to access your workspace
           </p>
         </div>
 

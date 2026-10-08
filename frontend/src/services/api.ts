@@ -1,5 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-
+const API_BASE_URL = 'http://localhost:8080';
 // Event Response Type
 export interface EventResponse {
   eventId: number;
@@ -12,15 +11,40 @@ export interface EventResponse {
   notes: string | null;
 }
 
+// Backend Roles matching Spring Boot Role enum exactly
+export type BackendRole =
+  | 'ADMIN'
+  | 'OPERATIONS_MANAGER'
+  | 'EVENT_COORDINATOR'
+  | 'FINANCE_OFFICER'
+  | 'VENDOR'
+  | 'CUSTOMER';
+
 // User Response Type
 export interface UserResponse {
   userId: number;
   name: string;
   email: string;
   phoneNum: string | null;
-  role: 'OPERATIONS_MANAGER' | 'EVENT_COORDINATOR';
+  role: BackendRole;
+}
+export interface CreateUserRequest {
+  name: string;
+  email: string;
+  password: string;
+  phoneNum?: string;
+  role: BackendRole;
 }
 
+export interface UpdateUserRequest {
+  name?: string;
+  email?: string;
+  phoneNum?: string;
+  role?: BackendRole;
+}
+export interface ChangePasswordRequest {
+  newPassword: string;
+}
 // Request Types
 export interface AssignEventRequest {
   eventName: string;
@@ -38,7 +62,7 @@ export interface RegisterRequest {
   fullName: string;
   email: string;
   password: string;
-  role: 'OPERATIONS_MANAGER' | 'EVENT_COORDINATOR';
+  role: BackendRole;
 }
 
 export interface CreateTaskRequest {
@@ -63,6 +87,21 @@ export interface TaskResponse {
   assigneeName: string | null;
 }
 
+// Auth Types
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  userId: number;
+  name: string;
+  email: string;
+  phoneNum?: string | null;
+  role: BackendRole;
+  token: string;
+}
+
 // API Service
 class ApiService {
   private baseUrl: string;
@@ -71,18 +110,32 @@ class ApiService {
     this.baseUrl = API_BASE_URL;
   }
 
+  // Retrieve stored token
+  private getToken(): string | null {
+    return localStorage.getItem('authToken') || localStorage.getItem('token');
+  }
+
   // Helper method for fetch requests
-  private async request<T>(
+  async request<T>(
     endpoint: string,
     options?: RequestInit
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
+    const token = this.getToken();
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(options?.headers as Record<string, string>),
+    };
+
+    // Automatically include Authorization header if token exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const config: RequestInit = {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
+      headers,
     };
 
     try {
@@ -106,13 +159,84 @@ class ApiService {
         throw error;
       }
 
-      return await response.json();
+      const contentType = response.headers.get('content-type') || '';
+
+      if (response.status === 204) {
+        return undefined as T;
+      }
+
+      if (contentType.includes('application/json')) {
+        return await response.json();
+      }
+
+      return await response.text() as T;
     } catch (error: any) {
       console.error('API request failed:', error);
       throw error;
     }
   }
 
+  // Auth APIs
+  async login(data: LoginRequest): Promise<LoginResponse> {
+    return this.request<LoginResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  get auth() {
+    return {
+      login: (data: LoginRequest) => this.login(data),
+      register: (data: RegisterRequest) => this.register(data),
+    };
+  }
+// User Management APIs
+  async getUsers(): Promise<UserResponse[]> {
+    return this.request<UserResponse[]>('/users');
+  }
+
+  async createUser(data: CreateUserRequest): Promise<UserResponse> {
+    return this.request<UserResponse>('/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateUser(
+      userId: number,
+      data: UpdateUserRequest
+  ): Promise<UserResponse> {
+    return this.request<UserResponse>(`/users/${userId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+  // Activity Logs API
+  async getActivityLogs(): Promise<{
+    id: number
+    userEmail: string
+    action: string
+    details: string
+    logType: string
+    timestamp: string
+  }[]> {
+    return this.request('/monitoring/logs')
+  }
+  async changeUserPassword(
+      userId: number,
+      data: ChangePasswordRequest
+  ): Promise<void> {
+    await this.request<void>(`/users/${userId}/password`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteUser(userId: number): Promise<void> {
+    await this.request<void>(`/users/${userId}`, {
+      method: 'DELETE',
+    });
+  }
   // Event APIs
   async getAllEvents(): Promise<EventResponse[]> {
     return this.request<EventResponse[]>('/events');
@@ -202,3 +326,4 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
+export const auth = apiService.auth;

@@ -1,50 +1,56 @@
 import React from 'react'
 
-interface VendorDashboardProps {
+interface EventCoordinatorDashboardProps {
     onNotify?: (message: string) => void
     onNavigateToPublic?: () => void
 }
 
-export default function VendorDashboard({
-                                            onNotify,
-                                            onNavigateToPublic
-                                        }: VendorDashboardProps) {
+export default function EventCoordinatorDashboard({
+                                                      onNotify,
+                                                      onNavigateToPublic
+                                                  }: EventCoordinatorDashboardProps) {
 
     const cards = [
         {
-            title: 'My Services',
-            description: 'View and manage the services you provide for events.',
-            icon: '🛠️'
+            title: 'My Events',
+            description: 'View and manage events assigned to you.',
+            icon: '📅',
+            action: 'events'
         },
         {
-            title: 'Availability',
-            description: 'Update your service availability and available dates.',
-            icon: '📅'
+            title: 'Task Management',
+            description: 'Create, assign and update event-related tasks.',
+            icon: '✓',
+            action: 'tasks'
         },
         {
-            title: 'Booking Requests',
-            description: 'View incoming event booking requests from customers.',
-            icon: '📩'
+            title: 'Schedules',
+            description: 'Manage event schedules, deadlines and important dates.',
+            icon: '🕒',
+            action: 'schedules'
         },
         {
-            title: 'Confirmed Bookings',
-            description: 'View and manage your confirmed event bookings.',
-            icon: '✅'
+            title: 'Vendor Coordination',
+            description: 'Coordinate vendors and track their arrangements.',
+            icon: '🤝',
+            action: 'vendors'
         },
         {
-            title: 'Service Updates',
-            description: 'Update service details, pricing and availability information.',
-            icon: '✏️'
+            title: 'Event Progress',
+            description: 'Monitor event progress and update task statuses.',
+            icon: '📊',
+            action: 'progress'
         },
         {
             title: 'Notifications',
-            description: 'View booking confirmations and important updates.',
-            icon: '🔔'
+            description: 'View important event and vendor updates.',
+            icon: '🔔',
+            action: 'notifications'
         }
     ]
 
-    const handleAction = (title: string) => {
-        onNotify?.(`${title} module selected`)
+    const handleAction = (action: string) => {
+        onNotify?.(`${action} module selected`)
     }
 
     return (
@@ -53,31 +59,29 @@ export default function VendorDashboard({
             {/* Header */}
             <div className="bg-white border-b border-slate-200 px-6 py-6">
                 <div className="max-w-7xl mx-auto">
-
                     <p className="text-sm text-violet-600 font-semibold uppercase tracking-wide">
-                        Vendor Management
+                        Event Coordination
                     </p>
 
                     <h1 className="text-3xl font-bold text-slate-900 mt-1">
-                        Vendor Dashboard
+                        Event Coordinator Dashboard
                     </h1>
 
                     <p className="text-slate-500 mt-2">
-                        Manage your services, availability and event booking requests.
+                        Manage assigned events, tasks, schedules and vendor coordination.
                     </p>
-
                 </div>
             </div>
 
             {/* Dashboard Content */}
             <div className="max-w-7xl mx-auto px-6 py-8">
 
-                {/* Summary */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+                {/* Quick Summary */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            My Services
+                            Assigned Events
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -86,7 +90,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Pending Requests
+                            Pending Tasks
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -95,16 +99,7 @@ export default function VendorDashboard({
 
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <p className="text-sm text-slate-500">
-                            Confirmed Bookings
-                        </p>
-                        <p className="text-3xl font-bold text-slate-900 mt-2">
-                            0
-                        </p>
-                    </div>
-
-                    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">
-                            Available Services
+                            Upcoming Deadlines
                         </p>
                         <p className="text-3xl font-bold text-slate-900 mt-2">
                             0
@@ -113,16 +108,16 @@ export default function VendorDashboard({
 
                 </div>
 
-                {/* Vendor Functions */}
+                {/* Main Functions */}
                 <h2 className="text-xl font-bold text-slate-900 mb-4">
-                    Vendor Functions
+                    Coordinator Functions
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
                     {cards.map((card) => (
                         <button
-                            key={card.title}
+                            key={card.action}
                             onClick={() => handleAction(card.title)}
                             className="text-left bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-violet-300 transition"
                         >
@@ -163,14 +158,12 @@ export default function VendorDashboard({
 
                 {/* Public Site */}
                 <div className="mt-6 flex justify-end">
-
                     <button
                         onClick={onNavigateToPublic}
                         className="rounded-lg bg-slate-900 hover:bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition"
                     >
                         Public Site
                     </button>
-
                 </div>
 
             </div>
