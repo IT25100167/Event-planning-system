@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard | Ceylon Celebrations</title>
+    
+    <!-- Fonts matching the premium Ceylon Celebrations aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/index.css?v=2">
+</head>
+<body>
+    <div class="app-layout">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-mark">
+                    <span class="cc-letters">CC</span>
+                    <div class="sparkles">✨</div>
+                </div>
+                <div class="logo-text">CEYLON</div>
+                <div class="logo-subtext">— CELEBRATIONS —</div>
+                <div class="logo-tagline">EVENTS. ELEVATED.</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <div class="nav-label">NAVIGATE</div>
+                    <a href="/" class="nav-item">Home</a>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-label">VENDOR STUDIO</div>
+                    <a href="/vendor/dashboard" class="nav-item" data-route="dashboard">Dashboard</a>
+                    <a href="/vendor/profile" class="nav-item" data-route="profile">Profile</a>
+                    <a href="/vendor/services" class="nav-item" data-route="services">Services</a>
+                    <a href="/vendor/availability" class="nav-item" data-route="availability">Availability</a>
+                    <a href="/vendor/bookings" class="nav-item" data-route="bookings">Bookings</a>
+                    <a href="/vendor/payments" class="nav-item" data-route="payments">Payments</a>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-label">INBOX</div>
+                    <a href="#" class="nav-item">Notifications</a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">N</div>
+                    <div class="user-info">
+                        <div class="user-name">Nethra Flowers</div>
+                        <div class="user-role">VENDOR / SERVICE PROVIDER</div>
+                    </div>
+                </div>
+                <button class="sign-out-btn">SIGN OUT</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-titles">
+                    <div class="header-brand">CEYLON CELEBRATIONS</div>
+                    <h1 id="pageTitle">Vendor dashboard</h1>
+                </div>
+                <button class="btn-outline">PUBLIC SITE</button>
+            </header>
+
+            <div class="page-container" id="app-root">
+                <!-- Content gets injected here by app.js based on routing -->
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal confirm-modal">
+            <h3 id="confirmModalTitle">Are you sure?</h3>
+            <p id="confirmModalMessage" style="color: var(--text-secondary); margin-top: 1rem; margin-bottom: 2rem;">This action cannot be undone.</p>
+            <div class="form-row" style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn-outline" id="confirmCancelBtn" style="padding: 0.6rem 1.5rem; width: auto;">Cancel</button>
+                <button class="btn-primary" id="confirmActionBtn" style="background: var(--danger); box-shadow: none; width: auto;">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastIcon">✓</span>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="/app.js?v=5"></script>
+</body>
+</html>
