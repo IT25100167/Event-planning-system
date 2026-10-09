@@ -1,179 +1,218 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import {
+  BadgeDollarSign,
+  Banknote,
+  FileText,
+  HandCoins,
+  Landmark,
+  ReceiptText,
+  TrendingUp,
+  WalletCards,
+} from 'lucide-react';
+import { financeService, FinancialSummary } from '../../services/financeService';
 
 interface FinanceOfficerDashboardProps {
-    onNotify?: (message: string) => void
-    onNavigateToPublic?: () => void
+  onNotify?: (message: string) => void;
+  onNavigateToPublic?: () => void;
+  onNavigate?: (page: string) => void;
 }
 
+const money = (value: number | undefined) =>
+  new Intl.NumberFormat('en-LK', {
+    style: 'currency',
+    currency: 'LKR',
+    maximumFractionDigits: 2,
+  }).format(Number(value || 0));
+
 export default function FinanceOfficerDashboard({
-                                                    onNotify,
-                                                    onNavigateToPublic
-                                                }: FinanceOfficerDashboardProps) {
+  onNotify,
+  onNavigateToPublic,
+  onNavigate,
+}: FinanceOfficerDashboardProps) {
+  const [summary, setSummary] = useState<FinancialSummary | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    const cards = [
-        {
-            title: 'Quotations',
-            description: 'Prepare, review and manage event quotations.',
-            icon: '📄'
-        },
-        {
-            title: 'Invoices',
-            description: 'Create and manage customer invoices and billing records.',
-            icon: '🧾'
-        },
-        {
-            title: 'Payments',
-            description: 'Track customer payments and payment status.',
-            icon: '💳'
-        },
-        {
-            title: 'Budgets',
-            description: 'Monitor event budgets and financial allocations.',
-            icon: '💰'
-        },
-        {
-            title: 'Financial Reports',
-            description: 'Review income, expenses and financial summaries.',
-            icon: '📊'
-        },
-        {
-            title: 'Outstanding Payments',
-            description: 'Identify unpaid and overdue customer payments.',
-            icon: '⚠️'
-        }
-    ]
+  const cards = [
+    {
+      title: 'Quotations',
+      description: 'Create, review and update customer quotations.',
+      icon: FileText,
+      page: 'financeQuotations',
+    },
+    {
+      title: 'Invoices',
+      description: 'Create invoices, review balances and download PDFs.',
+      icon: ReceiptText,
+      page: 'financeInvoices',
+    },
+    {
+      title: 'Customer Payments',
+      description: 'Record payments against invoices and review history.',
+      icon: WalletCards,
+      page: 'financeCustomerPayments',
+    },
+    {
+      title: 'Vendor Payments',
+      description: 'Track vendor liabilities and update settlement status.',
+      icon: HandCoins,
+      page: 'financeVendorPayments',
+    },
+    {
+      title: 'Event Budgets',
+      description: 'Create and manage allocated budgets by event.',
+      icon: Landmark,
+      page: 'financeBudgets',
+    },
+    {
+      title: 'Financial Summary',
+      description: 'Review income, expenses, receivables and cash flow.',
+      icon: TrendingUp,
+      page: 'financeSummary',
+    },
+  ];
 
-    const handleAction = (title: string) => {
-        onNotify?.(`${title} module selected`)
-    }
+  useEffect(() => {
+    let active = true;
+    financeService
+      .getSummary()
+      .then((data) => active && setSummary(data))
+      .catch((error: Error) => {
+        if (active) onNotify?.(`Unable to load finance summary: ${error.message}`);
+      })
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, [onNotify]);
 
-    return (
-        <div className="min-h-screen bg-slate-50">
+  const handleAction = (page: string) => {
+    onNavigate?.(page);
+  };
 
-            {/* Header */}
-            <div className="bg-white border-b border-slate-200 px-6 py-6">
-                <div className="max-w-7xl mx-auto">
-
-                    <p className="text-sm text-violet-600 font-semibold uppercase tracking-wide">
-                        Financial Management
-                    </p>
-
-                    <h1 className="text-3xl font-bold text-slate-900 mt-1">
-                        Finance Officer Dashboard
-                    </h1>
-
-                    <p className="text-slate-500 mt-2">
-                        Manage quotations, invoices, payments, budgets and financial reports.
-                    </p>
-
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="max-w-7xl mx-auto px-6 py-8">
-
-                {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
-
-                    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">
-                            Total Invoices
-                        </p>
-                        <p className="text-3xl font-bold text-slate-900 mt-2">
-                            0
-                        </p>
-                    </div>
-
-                    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">
-                            Paid Payments
-                        </p>
-                        <p className="text-3xl font-bold text-slate-900 mt-2">
-                            0
-                        </p>
-                    </div>
-
-                    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">
-                            Pending Payments
-                        </p>
-                        <p className="text-3xl font-bold text-slate-900 mt-2">
-                            0
-                        </p>
-                    </div>
-
-                    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">
-                            Active Budgets
-                        </p>
-                        <p className="text-3xl font-bold text-slate-900 mt-2">
-                            0
-                        </p>
-                    </div>
-
-                </div>
-
-                {/* Finance Functions */}
-                <h2 className="text-xl font-bold text-slate-900 mb-4">
-                    Finance Functions
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-
-                    {cards.map((card) => (
-                        <button
-                            key={card.title}
-                            onClick={() => handleAction(card.title)}
-                            className="text-left bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-violet-300 transition"
-                        >
-                            <div className="flex items-start gap-4">
-
-                                <div className="h-12 w-12 rounded-xl bg-violet-50 flex items-center justify-center text-2xl">
-                                    {card.icon}
-                                </div>
-
-                                <div>
-                                    <h3 className="font-semibold text-slate-900">
-                                        {card.title}
-                                    </h3>
-
-                                    <p className="text-sm text-slate-500 mt-1 leading-5">
-                                        {card.description}
-                                    </p>
-                                </div>
-
-                            </div>
-                        </button>
-                    ))}
-
-                </div>
-
-                {/* Recent Financial Activity */}
-                <div className="mt-8 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-
-                    <h2 className="text-lg font-bold text-slate-900">
-                        Recent Financial Activity
-                    </h2>
-
-                    <div className="mt-5 text-sm text-slate-500 text-center py-8">
-                        No recent financial activity available.
-                    </div>
-
-                </div>
-
-                {/* Public Site */}
-                <div className="mt-6 flex justify-end">
-
-                    <button
-                        onClick={onNavigateToPublic}
-                        className="rounded-lg bg-slate-900 hover:bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition"
-                    >
-                        Public Site
-                    </button>
-
-                </div>
-
-            </div>
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="border-b border-slate-200 bg-white px-6 py-6">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-sm font-semibold uppercase tracking-wide text-violet-600">
+            Financial Management
+          </p>
+          <h1 className="mt-1 text-3xl font-bold text-slate-900">
+            Finance Officer Dashboard
+          </h1>
+          <p className="mt-2 text-slate-500">
+            Manage quotations, invoices, customer payments, vendor payments,
+            event budgets and financial reporting.
+          </p>
         </div>
-    )
+      </div>
+
+      <div className="mx-auto max-w-7xl px-6 py-8">
+        <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            {
+              label: 'Customer Revenue',
+              value: money(summary?.totalCustomerRevenue),
+              icon: BadgeDollarSign,
+            },
+            {
+              label: 'Outstanding Receivables',
+              value: money(summary?.outstandingCustomerReceivables),
+              icon: WalletCards,
+            },
+            {
+              label: 'Vendor Payables',
+              value: money(summary?.outstandingVendorPayables),
+              icon: HandCoins,
+            },
+            {
+              label: 'Net Cash Flow',
+              value: money(summary?.netCashFlow),
+              icon: Banknote,
+            },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-slate-500">{item.label}</p>
+                    <p className="mt-2 text-2xl font-bold text-slate-900">
+                      {loading ? '...' : item.value}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-violet-50 p-2.5 text-violet-600">
+                    <Icon size={20} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mb-4 flex items-end justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Finance Functions</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Select a module to manage its financial workflow.
+            </p>
+          </div>
+          <button
+            onClick={onNavigateToPublic}
+            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+          >
+            Public Site
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {cards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <button
+                key={card.title}
+                onClick={() => handleAction(card.page)}
+                className="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600 transition group-hover:bg-violet-100">
+                    <Icon size={22} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900">{card.title}</h3>
+                    <p className="mt-1 text-sm leading-5 text-slate-500">
+                      {card.description}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-slate-500">Invoices</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900">
+              {loading ? '...' : summary?.invoiceCount || 0}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-slate-500">Paid Invoices</p>
+            <p className="mt-2 text-3xl font-bold text-emerald-600">
+              {loading ? '...' : summary?.paidInvoiceCount || 0}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-slate-500">Pending Vendor Payments</p>
+            <p className="mt-2 text-3xl font-bold text-amber-600">
+              {loading ? '...' : summary?.pendingVendorPaymentCount || 0}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
