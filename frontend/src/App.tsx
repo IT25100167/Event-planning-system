@@ -22,7 +22,9 @@ type Page =
     | 'users';
 
 function App() {
+  const TEAM_DASHBOARDS_ENABLED = false;
   // Start at landing page
+
   const [currentPage, setCurrentPage] = useState<Page>('landing');
   // Initialize user from localStorage if previously logged in
   const [user, setUser] = useState<LoginSuccessData | null>(() => {
@@ -148,28 +150,28 @@ function App() {
                       setCurrentPage('landing')
                   }
               />
-          ) : user.role === 'EVENT_COORDINATOR' ? (
+          )  : TEAM_DASHBOARDS_ENABLED && user.role === 'EVENT_COORDINATOR' ? (
               <EventCoordinatorDashboard
                   onNotify={notify}
                   onNavigateToPublic={() =>
                       setCurrentPage('landing')
                   }
               />
-          ) : user.role === 'FINANCE_OFFICER' ? (
+          )  : TEAM_DASHBOARDS_ENABLED && user.role === 'FINANCE_OFFICER' ? (
               <FinanceOfficerDashboard
                   onNotify={notify}
                   onNavigateToPublic={() =>
                       setCurrentPage('landing')
                   }
               />
-          ) : user.role === 'VENDOR' ? (
+          )  : TEAM_DASHBOARDS_ENABLED && user.role === 'VENDOR' ? (
               <VendorDashboard
                   onNotify={notify}
                   onNavigateToPublic={() =>
                       setCurrentPage('landing')
                   }
               />
-          ) : user.role === 'CUSTOMER' ? (
+          )  : TEAM_DASHBOARDS_ENABLED && user.role === 'CUSTOMER' ? (
               <CustomerDashboard
                   onNotify={notify}
                   onNavigateToPublic={() =>
