@@ -11,6 +11,12 @@ import AdminDashboard from './pages/dashboards/AdminDashboard';
 import CustomerDashboard from './pages/dashboards/CustomerDashboard';
 import UsersManagementPage from './pages/UsersManagementPage';
 import ActivityLogsPage from './pages/ActivityLogsPage';
+import QuotationsPage from './pages/finance/QuotationsPage';
+import InvoicesPage from './pages/finance/InvoicesPage';
+import CustomerPaymentsPage from './pages/finance/CustomerPaymentsPage';
+import VendorPaymentsPage from './pages/finance/VendorPaymentsPage';
+import EventBudgetsPage from './pages/finance/EventBudgetsPage';
+import FinancialSummaryPage from './pages/finance/FinancialSummaryPage';
 import { Bell, CheckCircle2, AlertTriangle, X } from 'lucide-react';
 
 type Page =
@@ -19,7 +25,13 @@ type Page =
     | 'register'
     | 'dashboard'
     | 'activityLogs'
-    | 'users';
+    | 'users'
+    | 'financeQuotations'
+    | 'financeInvoices'
+    | 'financeCustomerPayments'
+    | 'financeVendorPayments'
+    | 'financeBudgets'
+    | 'financeSummary';
 
 function App() {
   // Start at landing page
@@ -158,6 +170,7 @@ function App() {
           ) : user.role === 'FINANCE_OFFICER' ? (
               <FinanceOfficerDashboard
                   onNotify={notify}
+                  onNavigate={(page) => setCurrentPage(page as Page)}
                   onNavigateToPublic={() =>
                       setCurrentPage('landing')
                   }
@@ -349,6 +362,79 @@ function App() {
             )}
           </>
       );
+
+    case 'financeQuotations':
+      if (!user || !['FINANCE_OFFICER', 'ADMIN'].includes(user.role)) {
+        setCurrentPage('login');
+        return null;
+      }
+      return (
+        <QuotationsPage
+          onBack={() => setCurrentPage('dashboard')}
+          onNotify={notify}
+        />
+      );
+
+    case 'financeInvoices':
+      if (!user || !['FINANCE_OFFICER', 'ADMIN'].includes(user.role)) {
+        setCurrentPage('login');
+        return null;
+      }
+      return (
+        <InvoicesPage
+          onBack={() => setCurrentPage('dashboard')}
+          onNotify={notify}
+        />
+      );
+
+    case 'financeCustomerPayments':
+      if (!user || !['FINANCE_OFFICER', 'ADMIN'].includes(user.role)) {
+        setCurrentPage('login');
+        return null;
+      }
+      return (
+        <CustomerPaymentsPage
+          onBack={() => setCurrentPage('dashboard')}
+          onNotify={notify}
+        />
+      );
+
+    case 'financeVendorPayments':
+      if (!user || !['FINANCE_OFFICER', 'ADMIN'].includes(user.role)) {
+        setCurrentPage('login');
+        return null;
+      }
+      return (
+        <VendorPaymentsPage
+          onBack={() => setCurrentPage('dashboard')}
+          onNotify={notify}
+        />
+      );
+
+    case 'financeBudgets':
+      if (!user || !['FINANCE_OFFICER', 'ADMIN'].includes(user.role)) {
+        setCurrentPage('login');
+        return null;
+      }
+      return (
+        <EventBudgetsPage
+          onBack={() => setCurrentPage('dashboard')}
+          onNotify={notify}
+        />
+      );
+
+    case 'financeSummary':
+      if (!user || !['FINANCE_OFFICER', 'ADMIN'].includes(user.role)) {
+        setCurrentPage('login');
+        return null;
+      }
+      return (
+        <FinancialSummaryPage
+          onBack={() => setCurrentPage('dashboard')}
+          onNotify={notify}
+        />
+      );
+
     default:
       return <LandingPage onEnter={() => setCurrentPage('login')} onBooking={() => setCurrentPage('register')} />;
   }
