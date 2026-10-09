@@ -1,108 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Event Planning & Management System</title>
-  <meta name="description" content="A modern enterprise event planning, user management, and coordination platform for SLIIT." />
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="./css/variables.css" />
-  <link rel="stylesheet" href="./css/base.css" />
-  <link rel="stylesheet" href="./css/components.css" />
-  <link rel="stylesheet" href="./css/layout.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard | Ceylon Celebrations</title>
+    
+    <!-- Fonts matching the premium Ceylon Celebrations aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/index.css?v=2">
 </head>
 <body>
-  <div id="app" class="app-container">
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar-container">
-      <div class="sidebar-header">
-        <div class="brand-logo">EP</div>
-        <div class="brand-name">PlanSphere</div>
-        <span class="brand-badge">SLIIT</span>
-      </div>
-
-      <nav class="sidebar-nav">
-        <div class="nav-section-title">Navigation</div>
+    <div class="app-layout">
         
-        <a href="#/dashboard" class="nav-item active" id="nav-dashboard-link">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          <span>Dashboard</span>
-        </a>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-mark">
+                    <span class="cc-letters">CC</span>
+                    <div class="sparkles">✨</div>
+                </div>
+                <div class="logo-text">CEYLON</div>
+                <div class="logo-subtext">— CELEBRATIONS —</div>
+                <div class="logo-tagline">EVENTS. ELEVATED.</div>
+            </div>
 
-        <a href="#/events" class="nav-item" id="nav-events-link">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          <span>Events Workspace</span>
-        </a>
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <div class="nav-label">NAVIGATE</div>
+                    <a href="/" class="nav-item">Home</a>
+                </div>
 
-        <a href="#/users" class="nav-item" id="nav-users-link">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          <span>User Management</span>
-        </a>
+                <div class="nav-group">
+                    <div class="nav-label">VENDOR STUDIO</div>
+                    <a href="/vendor/dashboard" class="nav-item" data-route="dashboard">Dashboard</a>
+                    <a href="/vendor/profile" class="nav-item" data-route="profile">Profile</a>
+                    <a href="/vendor/services" class="nav-item" data-route="services">Services</a>
+                    <a href="/vendor/availability" class="nav-item" data-route="availability">Availability</a>
+                    <a href="/vendor/bookings" class="nav-item" data-route="bookings">Bookings</a>
+                    <a href="/vendor/payments" class="nav-item" data-route="payments">Payments</a>
+                </div>
 
-        <div class="nav-section-title">Account</div>
+                <div class="nav-group">
+                    <div class="nav-label">INBOX</div>
+                    <a href="#" class="nav-item">Notifications</a>
+                </div>
+            </nav>
 
-        <a href="#/profile" class="nav-item" id="nav-profile-link">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          <span>My Profile</span>
-        </a>
-      </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">N</div>
+                    <div class="user-info">
+                        <div class="user-name">Nethra Flowers</div>
+                        <div class="user-role">VENDOR / SERVICE PROVIDER</div>
+                    </div>
+                </div>
+                <button class="sign-out-btn">SIGN OUT</button>
+            </div>
+        </aside>
 
-      <div class="sidebar-footer">
-        <div class="user-mini-card" id="sidebar-user-card">
-          <div class="user-avatar" id="sidebar-user-avatar">U</div>
-          <div class="user-details">
-            <span class="name" id="sidebar-user-name">User</span>
-            <span class="role-text" id="sidebar-user-role">Role</span>
-          </div>
-        </div>
-      </div>
-    </aside>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-titles">
+                    <div class="header-brand">CEYLON CELEBRATIONS</div>
+                    <h1 id="pageTitle">Vendor dashboard</h1>
+                </div>
+                <button class="btn-outline">PUBLIC SITE</button>
+            </header>
 
-    <!-- Main Content Wrapper -->
-    <div class="main-wrapper">
-      <!-- Sticky Top Header -->
-      <header class="topbar" id="topbar-container">
-        <div style="display: flex; align-items: center; gap: 16px;">
-          <button id="mobile-menu-toggle" class="btn-icon" style="display: none;" title="Toggle Menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
-          <div class="page-title-area">
-            <h2 id="page-current-title">Dashboard</h2>
-          </div>
-        </div>
+            <div class="page-container" id="app-root">
+                <!-- Content gets injected here by app.js based on routing -->
+            </div>
+        </main>
 
-        <div class="topbar-actions">
-          <a href="#/events" class="btn btn-secondary btn-sm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>New Event</span>
-          </a>
-          <button id="logout-btn" class="btn btn-secondary btn-sm" title="Log out">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            <span>Sign Out</span>
-          </button>
-        </div>
-      </header>
-
-      <!-- Dynamic Page Content -->
-      <main class="content-area" id="content-viewport">
-        <!-- SPA Pages Rendered Here -->
-      </main>
     </div>
-  </div>
 
-  <!-- Toast Notification Mount -->
-  <div id="toast-container"></div>
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal confirm-modal">
+            <h3 id="confirmModalTitle">Are you sure?</h3>
+            <p id="confirmModalMessage" style="color: var(--text-secondary); margin-top: 1rem; margin-bottom: 2rem;">This action cannot be undone.</p>
+            <div class="form-row" style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn-outline" id="confirmCancelBtn" style="padding: 0.6rem 1.5rem; width: auto;">Cancel</button>
+                <button class="btn-primary" id="confirmActionBtn" style="background: var(--danger); box-shadow: none; width: auto;">Delete</button>
+            </div>
+        </div>
+    </div>
 
-  <!-- Modal Mount -->
-  <div id="modal-overlay" class="modal-overlay"></div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastIcon">✓</span>
+        <span id="toastMessage">Success</span>
+    </div>
 
-  <!-- Main JavaScript Module -->
-  <script type="module" src="./js/app.js"></script>
+    <script src="/app.js?v=5"></script>
 </body>
 </html>

@@ -1,0 +1,748 @@
+<svg width="3500" height="1720" viewBox="0 0 3500 1720" xmlns="http://www.w3.org/2000/svg" style="background:#f8fafc; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    
+    <linearGradient id="eventGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+
+    <linearGradient id="userGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#312e81" />
+      <stop offset="100%" stop-color="#4338ca" />
+    </linearGradient>
+
+    <linearGradient id="enumGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#065f46" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <linearGradient id="venueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0e7490" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+
+    <linearGradient id="vendorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6b21a8" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+
+    <linearGradient id="regGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <linearGradient id="payGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <linearGradient id="auditGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#475569" />
+    </linearGradient>
+
+    <linearGradient id="archGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#3730a3" />
+    </linearGradient>
+
+    <linearGradient id="serviceGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+
+    <!-- Filters for drop shadows -->
+    <filter id="cardShadow" x="-5%" y="-3%" width="110%" height="110%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08" />
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.04" />
+    </filter>
+
+    <filter id="panelShadow" x="-2%" y="-2%" width="104%" height="104%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.03" />
+    </filter>
+
+    <!-- Markers -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155" />
+    </marker>
+    
+    <marker id="arrowOpen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round" />
+    </marker>
+
+    <marker id="compDiamond" viewBox="0 0 16 10" refX="0" refY="5" markerWidth="14" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 5 L 7 1 L 14 5 L 7 9 z" fill="#1e293b" stroke="#1e293b" stroke-width="1.5"/>
+    </marker>
+
+    <marker id="aggrDiamond" viewBox="0 0 16 10" refX="0" refY="5" markerWidth="14" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 5 L 7 1 L 14 5 L 7 9 z" fill="#ffffff" stroke="#1e293b" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <!-- Background Grid Pattern -->
+  <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="20" cy="20" r="1" fill="#cbd5e1" opacity="0.6"/>
+  </pattern>
+  <rect width="100%" height="100%" fill="#f8fafc"/>
+  <rect width="100%" height="100%" fill="url(#gridPattern)"/>
+
+  <!-- TOP HEADER BANNER -->
+  <rect x="0" y="0" width="3500" height="110" fill="url(#headerGrad)"/>
+  <rect x="0" y="106" width="3500" height="4" fill="#3b82f6"/>
+  
+  <text x="50" y="48" font-size="28" font-weight="800" fill="#ffffff" letter-spacing="0.5">EVENT PLANNING SYSTEM &mdash; UNIFIED UML CLASS DIAGRAM</text>
+  <text x="50" y="82" font-size="16" font-weight="500" fill="#94a3b8">Comprehensive Software Engineering Model: Core Business Entities, Multiplicities &amp; Spring Boot Multi-Tier Architecture</text>
+  
+  <!-- System Badges in Header -->
+  <g transform="translate(1420, 32)">
+    <rect x="0" y="0" width="130" height="32" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <circle cx="16" cy="16" r="5" fill="#10b981"/>
+    <text x="30" y="21" font-size="12" font-weight="700" fill="#e2e8f0">UML 2.5 STD</text>
+
+    <rect x="145" y="0" width="165" height="32" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="160" y="21" font-size="12" font-weight="700" fill="#38bdf8">SLIIT IT PROJECT</text>
+
+    <rect x="325" y="0" width="180" height="32" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="340" y="21" font-size="12" font-weight="700" fill="#cbd5e1">SPRING BOOT + JPA</text>
+  </g>
+
+  <!-- LEGEND BOX IN HEADER -->
+  <g transform="translate(2420, 16)">
+    <rect x="0" y="0" width="1040" height="78" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <text x="20" y="24" font-size="12" font-weight="800" fill="#94a3b8" letter-spacing="1">UML NOTATION LEGEND</text>
+    
+    <!-- Composition -->
+    <path d="M 20 52 L 34 47 L 48 52 L 34 57 Z" fill="#ffffff"/>
+    <line x1="48" y1="52" x2="85" y2="52" stroke="#ffffff" stroke-width="2"/>
+    <text x="95" y="56" font-size="12" fill="#cbd5e1"><tspan font-weight="700">Composition</tspan> (Strict Ownership)</text>
+
+    <!-- Aggregation -->
+    <path d="M 290 52 L 304 47 L 318 52 L 304 57 Z" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <line x1="318" y1="52" x2="355" y2="52" stroke="#ffffff" stroke-width="2"/>
+    <text x="365" y="56" font-size="12" fill="#cbd5e1"><tspan font-weight="700">Aggregation</tspan> (Has-A / Shared)</text>
+
+    <!-- Association -->
+    <line x1="560" y1="52" x2="620" y2="52" stroke="#ffffff" stroke-width="2"/>
+    <text x="630" y="56" font-size="12" fill="#cbd5e1"><tspan font-weight="700">Association</tspan> (1 to 0..*)</text>
+
+    <!-- Dependency -->
+    <line x1="770" y1="52" x2="830" y2="52" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
+    <path d="M 825 48 L 835 52 L 825 56" fill="none" stroke="#94a3b8" stroke-width="2"/>
+    <text x="845" y="56" font-size="12" fill="#cbd5e1"><tspan font-weight="700">Dependency</tspan> / Service Call</text>
+  </g>
+
+  <!-- ==================== PACKAGE CONTAINER PANELS ==================== -->
+
+  <!-- PACKAGE 1: Identity & Access -->
+  <g transform="translate(40, 130)">
+    <rect width="780" height="1550" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#panelShadow)"/>
+    <rect width="780" height="42" rx="12" fill="#f1f5f9"/>
+    <rect y="30" width="780" height="12" fill="#f1f5f9"/>
+    <text x="24" y="27" font-size="14" font-weight="800" fill="#475569" letter-spacing="1">PACKAGE 1: IDENTITY, ACCESS &amp; AUDIT</text>
+  </g>
+
+  <!-- PACKAGE 2: Core Event Operations Domain -->
+  <g transform="translate(850, 130)">
+    <rect width="1310" height="1550" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#panelShadow)"/>
+    <rect width="1310" height="42" rx="12" fill="#eff6ff"/>
+    <rect y="30" width="1310" height="12" fill="#eff6ff"/>
+    <text x="24" y="27" font-size="14" font-weight="800" fill="#1d4ed8" letter-spacing="1">PACKAGE 2: CORE BUSINESS DOMAIN ENTITIES &amp; LIFECYCLE</text>
+  </g>
+
+  <!-- PACKAGE 3: Spring Boot Architecture -->
+  <g transform="translate(2190, 130)">
+    <rect width="1270" height="1550" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#panelShadow)"/>
+    <rect width="1270" height="42" rx="12" fill="#f8fafc"/>
+    <rect y="30" width="1270" height="12" fill="#f8fafc"/>
+    <text x="24" y="27" font-size="14" font-weight="800" fill="#334155" letter-spacing="1">PACKAGE 3: SPRING BOOT ARCHITECTURE (CONTROLLERS, SERVICES, REPOSITORIES)</text>
+  </g>
+
+  <!-- ==================== RELATIONSHIP CONNECTIONS (BACKGROUND LINES) ==================== -->
+
+  <!-- (1) Role to User: Composition (User has 1 Role) -->
+  <g>
+    <!-- Filled diamond at User (390, 310), line to Role (350, 310) -->
+    <path d="M 390 310 L 378 305 L 366 310 L 378 315 Z" fill="#1e293b" stroke="#1e293b" stroke-width="1.5"/>
+    <line x1="366" y1="310" x2="350" y2="310" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="355" y="300" font-size="12" font-weight="700" fill="#047857">1</text>
+    <text x="395" y="300" font-size="12" font-weight="700" fill="#1e3a8a">1</text>
+  </g>
+
+  <!-- (2) User to Event: Association (User coordinates/organizes Event) -->
+  <g>
+    <line x1="790" y1="360" x2="900" y2="360" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="800" y="350" font-size="13" font-weight="700" fill="#1e3a8a">1</text>
+    <text x="865" y="350" font-size="13" font-weight="700" fill="#1d4ed8">0..*</text>
+    <rect x="808" y="368" width="75" height="18" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="812" y="381" font-size="10" font-weight="700" fill="#475569">organizes</text>
+  </g>
+
+  <!-- (3) User to Registration: Association (User attends/registers) -->
+  <g>
+    <line x1="590" y1="670" x2="590" y2="730" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="598" y="690" font-size="12" font-weight="700" fill="#1e3a8a">1</text>
+    <text x="598" y="722" font-size="12" font-weight="700" fill="#b45309">0..*</text>
+    <rect x="535" y="692" width="50" height="18" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="540" y="705" font-size="10" font-weight="700" fill="#475569">attends</text>
+  </g>
+
+  <!-- (4) User to VendorService: Association (Vendor User provides service) -->
+  <g>
+    <path d="M 790 540 L 840 540 L 840 920 L 900 920" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="798" y="532" font-size="12" font-weight="700" fill="#1e3a8a">1 (VENDOR)</text>
+    <text x="850" y="912" font-size="12" font-weight="700" fill="#6b21a8">0..*</text>
+    <rect x="800" y="640" width="80" height="20" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="806" y="654" font-size="10" font-weight="700" fill="#6b21a8">operates</text>
+  </g>
+
+  <!-- (5) User to ActivityLog: Association (User generates logs) -->
+  <g>
+    <path d="M 390 560 L 350 560" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="375" y="550" font-size="12" font-weight="700" fill="#1e3a8a">1</text>
+    <text x="355" y="550" font-size="12" font-weight="700" fill="#475569">0..*</text>
+  </g>
+
+  <!-- (6) Event to Venue: Aggregation (Event hosted at Venue) -->
+  <g>
+    <!-- Hollow diamond at Event (1400, 310) -->
+    <path d="M 1400 310 L 1412 305 L 1424 310 L 1412 315 Z" fill="#ffffff" stroke="#1e293b" stroke-width="1.5"/>
+    <line x1="1424" y1="310" x2="1480" y2="310" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="1430" y="300" font-size="12" font-weight="700" fill="#1d4ed8">0..*</text>
+    <text x="1465" y="300" font-size="12" font-weight="700" fill="#0e7490">1</text>
+    <rect x="1420" y="318" width="55" height="18" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="1425" y="331" font-size="10" font-weight="700" fill="#475569">hosted at</text>
+  </g>
+
+  <!-- (7) Event to Booking: Composition (Event secured via Booking) -->
+  <g>
+    <!-- Filled diamond at Event (1400, 520) -->
+    <path d="M 1400 520 L 1412 515 L 1424 520 L 1412 525 Z" fill="#1e293b" stroke="#1e293b" stroke-width="1.5"/>
+    <path d="M 1424 520 L 1450 520 L 1450 720 L 1480 720" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="1430" y="512" font-size="12" font-weight="700" fill="#1d4ed8">1</text>
+    <text x="1455" y="712" font-size="12" font-weight="700" fill="#2563eb">0..*</text>
+    <rect x="1420" y="580" width="60" height="20" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="1425" y="594" font-size="10" font-weight="700" fill="#475569">secures</text>
+  </g>
+
+  <!-- (8) Event to VendorService: Association (Event contracts VendorService) -->
+  <g>
+    <line x1="1120" y1="730" x2="1120" y2="780" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="1130" y="745" font-size="12" font-weight="700" fill="#1d4ed8">1</text>
+    <text x="1130" y="775" font-size="12" font-weight="700" fill="#6b21a8">0..*</text>
+    <rect x="1055" y="745" width="60" height="18" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="1060" y="758" font-size="10" font-weight="700" fill="#475569">contracts</text>
+  </g>
+
+  <!-- (9) Event to Registration: Composition (Event has Registrations) -->
+  <g>
+    <!-- Filled diamond at Event (900, 620) -->
+    <path d="M 900 620 L 888 615 L 876 620 L 888 625 Z" fill="#1e293b" stroke="#1e293b" stroke-width="1.5"/>
+    <path d="M 876 620 L 855 620 L 855 830 L 790 830" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="860" y="612" font-size="12" font-weight="700" fill="#1d4ed8">1</text>
+    <text x="800" y="822" font-size="12" font-weight="700" fill="#b45309">0..*</text>
+    <rect x="815" y="710" width="75" height="18" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="820" y="723" font-size="10" font-weight="700" fill="#475569">has tickets</text>
+  </g>
+
+  <!-- (10) Booking to Payment: Association (Booking requires Payment) -->
+  <g>
+    <path d="M 1690 990 L 1690 1280 L 1640 1280" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="1700" y="1010" font-size="12" font-weight="700" fill="#2563eb">1</text>
+    <text x="1650" y="1270" font-size="12" font-weight="700" fill="#047857">1</text>
+    <rect x="1655" y="1120" width="70" height="20" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="1660" y="1134" font-size="10" font-weight="700" fill="#475569">requires</text>
+  </g>
+
+  <!-- (11) Registration to Payment: Association (Ticket payment) -->
+  <g>
+    <path d="M 590 1110 L 590 1380 L 1150 1380" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="600" y="1130" font-size="12" font-weight="700" fill="#b45309">1</text>
+    <text x="1115" y="1370" font-size="12" font-weight="700" fill="#047857">0..1</text>
+    <rect x="840" y="1368" width="80" height="20" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="846" y="1382" font-size="10" font-weight="700" fill="#475569">ticket fee</text>
+  </g>
+
+  <!-- (12) VendorService to Payment: Association (Vendor payout) -->
+  <g>
+    <path d="M 1120 1160 L 1120 1280 L 1150 1280" fill="none" stroke="#1e293b" stroke-width="2.5"/>
+    <text x="1130" y="1180" font-size="12" font-weight="700" fill="#6b21a8">1</text>
+    <text x="1125" y="1270" font-size="12" font-weight="700" fill="#047857">0..*</text>
+    <rect x="1075" y="1215" width="80" height="20" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="1080" y="1229" font-size="10" font-weight="700" fill="#475569">disburses</text>
+  </g>
+
+  <!-- (13) Architecture Subsystem Dependencies (Spring Boot Layering) -->
+  <g>
+    <!-- AuthController to UserService -->
+    <path d="M 2640 280 L 2730 280" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+    <text x="2660" y="270" font-size="11" font-weight="700" fill="#334155">delegates</text>
+
+    <!-- UserController to UserService -->
+    <path d="M 2660 560 L 2695 560 L 2695 380 L 2730 380" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+    <text x="2665" y="540" font-size="11" font-weight="700" fill="#334155">invokes</text>
+
+    <!-- UserService to UserRepository -->
+    <path d="M 2960 530 L 2960 590" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+    <text x="2970" y="565" font-size="11" font-weight="700" fill="#334155">uses JPA repo</text>
+
+    <!-- AuthController to JwtService -->
+    <path d="M 2440 450 L 2440 910" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+    <text x="2450" y="680" font-size="11" font-weight="700" fill="#6b21a8">generates tokens</text>
+
+    <!-- UserController & AuthController to ActivityLogService -->
+    <path d="M 2660 760 L 2700 760 L 2700 960 L 2730 960" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+    <text x="2665" y="745" font-size="11" font-weight="700" fill="#334155">audits to</text>
+  </g>
+
+  <!-- ==================== UML CLASS BOXES ==================== -->
+
+  <!-- CLASS 1: Role (Enum) -->
+  <g transform="translate(70, 190)" filter="url(#cardShadow)">
+    <rect width="280" height="280" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 50 L 0 50 Z" fill="url(#enumGrad)"/>
+    <text x="140" y="24" font-size="11" font-weight="700" fill="#a7f3d0" text-anchor="middle">&lt;&lt;enumeration&gt;&gt;</text>
+    <text x="140" y="42" font-size="16" font-weight="800" fill="#ffffff" text-anchor="middle">Role</text>
+    
+    <g transform="translate(20, 75)">
+      <text y="0" font-size="13" font-weight="600" fill="#065f46">+ ADMIN</text>
+      <text y="32" font-size="13" font-weight="600" fill="#065f46">+ OPERATIONS_MANAGER</text>
+      <text y="64" font-size="13" font-weight="600" fill="#065f46">+ EVENT_COORDINATOR</text>
+      <text y="96" font-size="13" font-weight="600" fill="#065f46">+ FINANCE_OFFICER</text>
+      <text y="128" font-size="13" font-weight="600" fill="#065f46">+ VENDOR</text>
+      <text y="160" font-size="13" font-weight="600" fill="#065f46">+ CUSTOMER</text>
+    </g>
+  </g>
+
+  <!-- CLASS 2: User (UserEntity) -->
+  <g transform="translate(390, 190)" filter="url(#cardShadow)">
+    <rect width="400" height="480" rx="8" fill="#ffffff" stroke="#4338ca" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 392 0 Q 400 0 400 8 L 400 52 L 0 52 Z" fill="url(#userGrad)"/>
+    <text x="200" y="24" font-size="11" font-weight="700" fill="#c7d2fe" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="200" y="44" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">User / UserEntity</text>
+    
+    <!-- Attributes -->
+    <g transform="translate(20, 78)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> userId : Integer</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> name : String</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> email : String</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> password : String</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> phoneNum : String</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> role : Role</text>
+      <text y="144" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> createdAt : LocalDateTime</text>
+    </g>
+
+    <!-- Divider -->
+    <line x1="0" y1="240" x2="400" y2="240" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <!-- Methods -->
+    <g transform="translate(20, 266)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> register(dto : RegisterRequestDTO) : UserResponseDTO</text>
+      <text y="26" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> login(dto : LoginRequestDTO) : LoginResponseDTO</text>
+      <text y="52" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> updateProfile(dto : UpdateUserRequestDTO) : UserResponseDTO</text>
+      <text y="78" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> changePassword(oldPwd: String, newPwd: String) : boolean</text>
+      <text y="104" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getUserId() : Integer</text>
+      <text y="130" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getEmail() : String</text>
+      <text y="156" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getRole() : Role</text>
+      <text y="182" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> setRole(role : Role) : void</text>
+    </g>
+  </g>
+
+  <!-- CLASS 3: ActivityLog -->
+  <g transform="translate(70, 500)" filter="url(#cardShadow)">
+    <rect width="280" height="310" rx="8" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 48 L 0 48 Z" fill="url(#auditGrad)"/>
+    <text x="140" y="22" font-size="11" font-weight="700" fill="#cbd5e1" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="140" y="40" font-size="16" font-weight="800" fill="#ffffff" text-anchor="middle">ActivityLog</text>
+    
+    <g transform="translate(18, 70)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> id : Long</text>
+      <text y="22" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> userEmail : String</text>
+      <text y="44" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> action : String</text>
+      <text y="66" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> details : String</text>
+      <text y="88" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> logType : String</text>
+      <text y="110" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> timestamp : LocalDateTime</text>
+    </g>
+
+    <line x1="0" y1="195" x2="280" y2="195" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 222)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> log(email, action, details) : void</text>
+      <text y="24" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getRecentLogs() : List&lt;Log&gt;</text>
+      <text y="48" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getId() : Long</text>
+      <text y="72" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getTimestamp() : LocalDateTime</text>
+    </g>
+  </g>
+
+  <!-- CLASS 4: BackupRecord -->
+  <g transform="translate(70, 840)" filter="url(#cardShadow)">
+    <rect width="280" height="270" rx="8" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 48 L 0 48 Z" fill="url(#auditGrad)"/>
+    <text x="140" y="22" font-size="11" font-weight="700" fill="#cbd5e1" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="140" y="40" font-size="16" font-weight="800" fill="#ffffff" text-anchor="middle">BackupRecord</text>
+    
+    <g transform="translate(18, 70)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> backupId : Long</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> fileName : String</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> backupPath : String</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> fileSizeBytes : Long</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> createdAt : LocalDateTime</text>
+    </g>
+
+    <line x1="0" y1="180" x2="280" y2="180" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 206)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> createBackup() : String</text>
+      <text y="26" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> restoreBackup(fileName) : boolean</text>
+      <text y="52" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getBackupPath() : String</text>
+    </g>
+  </g>
+
+  <!-- CLASS 5: Registration -->
+  <g transform="translate(390, 730)" filter="url(#cardShadow)">
+    <rect width="400" height="380" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 392 0 Q 400 0 400 8 L 400 52 L 0 52 Z" fill="url(#regGrad)"/>
+    <text x="200" y="24" font-size="11" font-weight="700" fill="#fde68a" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="200" y="44" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">Registration / Ticket</text>
+    
+    <g transform="translate(20, 78)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> registrationId : Long</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> eventId : Long</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> attendeeUserId : Integer</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> registeredAt : LocalDateTime</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> ticketType : String</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> ticketCode : String</text>
+      <text y="144" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> attendanceStatus : String</text>
+    </g>
+
+    <line x1="0" y1="236" x2="400" y2="236" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(20, 262)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> generateTicket() : String</text>
+      <text y="26" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> validateTicket(code : String) : boolean</text>
+      <text y="52" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> checkInAttendee() : boolean</text>
+      <text y="78" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> cancelRegistration() : void</text>
+      <text y="104" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getAttendanceStatus() : String</text>
+    </g>
+  </g>
+
+  <!-- CLASS 6: Event (Core Aggregate Root) -->
+  <g transform="translate(900, 190)" filter="url(#cardShadow)">
+    <rect width="500" height="540" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 492 0 Q 500 0 500 8 L 500 54 L 0 54 Z" fill="url(#eventGrad)"/>
+    <text x="250" y="24" font-size="12" font-weight="700" fill="#bfdbfe" text-anchor="middle">&lt;&lt;aggregate root / entity&gt;&gt;</text>
+    <text x="250" y="46" font-size="20" font-weight="800" fill="#ffffff" text-anchor="middle">Event</text>
+    
+    <!-- Attributes -->
+    <g transform="translate(22, 80)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> eventId : Long</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> title : String</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> category : String</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> date : LocalDate</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> startTime : LocalTime</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> endTime : LocalTime</text>
+      <text y="144" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> status : String</text>
+      <text y="168" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> budget : Double</text>
+      <text y="192" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> expectedAttendees : Integer</text>
+      <text y="216" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> description : String</text>
+      <text y="240" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> coordinatorId : Integer</text>
+    </g>
+
+    <!-- Divider -->
+    <line x1="0" y1="334" x2="500" y2="334" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <!-- Methods -->
+    <g transform="translate(22, 360)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> createEvent() : void</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> updateStatus(newStatus : String) : void</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> calculateTotalCost() : Double</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> assignCoordinator(coordinator : User) : void</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> isBudgetExceeded() : boolean</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getEventSummary() : String</text>
+      <text y="144" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getTitle() : String</text>
+      <text y="168" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getStatus() : String</text>
+    </g>
+  </g>
+
+  <!-- CLASS 7: Venue -->
+  <g transform="translate(1480, 190)" filter="url(#cardShadow)">
+    <rect width="400" height="370" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 392 0 Q 400 0 400 8 L 400 50 L 0 50 Z" fill="url(#venueGrad)"/>
+    <text x="200" y="22" font-size="11" font-weight="700" fill="#bae6fd" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="200" y="42" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">Venue</text>
+    
+    <g transform="translate(20, 75)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> venueId : Long</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> name : String</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> address : String</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> capacity : Integer</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> rentalCost : Double</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> contactNumber : String</text>
+      <text y="144" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> isAvailable : Boolean</text>
+    </g>
+
+    <line x1="0" y1="230" x2="400" y2="230" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(20, 256)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> checkAvailability(date : LocalDate) : boolean</text>
+      <text y="26" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> reserveVenue(event : Event) : boolean</text>
+      <text y="52" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> calculateRentalFee(hours: int) : Double</text>
+      <text y="78" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getCapacity() : Integer</text>
+      <text y="104" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getRentalCost() : Double</text>
+    </g>
+  </g>
+
+  <!-- CLASS 8: Booking -->
+  <g transform="translate(1480, 620)" filter="url(#cardShadow)">
+    <rect width="400" height="370" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 392 0 Q 400 0 400 8 L 400 50 L 0 50 Z" fill="url(#eventGrad)"/>
+    <text x="200" y="22" font-size="11" font-weight="700" fill="#bfdbfe" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="200" y="42" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">Booking</text>
+    
+    <g transform="translate(20, 75)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> bookingId : Long</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> eventId : Long</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> bookingDate : LocalDateTime</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> bookingStatus : String</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> advancePayment : Double</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> totalCost : Double</text>
+    </g>
+
+    <line x1="0" y1="210" x2="400" y2="210" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(20, 236)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> confirmBooking() : void</text>
+      <text y="26" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> cancelBooking() : void</text>
+      <text y="52" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> calculateBalance() : Double</text>
+      <text y="78" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> updateStatus(status: String) : void</text>
+      <text y="104" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getBookingDetails() : String</text>
+    </g>
+  </g>
+
+  <!-- CLASS 9: VendorService -->
+  <g transform="translate(900, 780)" filter="url(#cardShadow)">
+    <rect width="480" height="380" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 472 0 Q 480 0 480 8 L 480 50 L 0 50 Z" fill="url(#vendorGrad)"/>
+    <text x="240" y="22" font-size="11" font-weight="700" fill="#e9d5ff" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="240" y="42" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">VendorService</text>
+    
+    <g transform="translate(20, 75)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> vendorServiceId : Long</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> vendorUserId : Integer</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> companyName : String</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> serviceType : String</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> priceQuotation : Double</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> contactEmail : String</text>
+      <text y="144" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> serviceStatus : String</text>
+    </g>
+
+    <line x1="0" y1="230" x2="480" y2="230" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(20, 256)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> provideQuotation(eventId: Long) : Double</text>
+      <text y="26" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> confirmContract() : void</text>
+      <text y="52" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> updateServiceStatus(status : String) : void</text>
+      <text y="78" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getServiceSummary() : String</text>
+      <text y="104" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getPriceQuotation() : Double</text>
+    </g>
+  </g>
+
+  <!-- CLASS 10: Payment -->
+  <g transform="translate(1150, 1220)" filter="url(#cardShadow)">
+    <rect width="490" height="390" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 482 0 Q 490 0 490 8 L 490 52 L 0 52 Z" fill="url(#payGrad)"/>
+    <text x="245" y="24" font-size="11" font-weight="700" fill="#a7f3d0" text-anchor="middle">&lt;&lt;entity&gt;&gt;</text>
+    <text x="245" y="44" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">Payment</text>
+    
+    <g transform="translate(20, 78)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> paymentId : Long</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> bookingId : Long</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> amount : Double</text>
+      <text y="72" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> paymentDate : LocalDateTime</text>
+      <text y="96" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> paymentMethod : String</text>
+      <text y="120" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> paymentStatus : String</text>
+      <text y="144" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> transactionReference : String</text>
+    </g>
+
+    <line x1="0" y1="236" x2="490" y2="236" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(20, 262)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> processPayment() : boolean</text>
+      <text y="26" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> generateReceipt() : String</text>
+      <text y="52" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> refundPayment() : boolean</text>
+      <text y="78" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> verifyTransaction(ref : String) : boolean</text>
+      <text y="104" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getPaymentSummary() : String</text>
+    </g>
+  </g>
+
+  <!-- ==================== ARCHITECTURE CLASSES (PACKAGE 3) ==================== -->
+
+  <!-- CLASS 11: AuthController -->
+  <g transform="translate(2240, 190)" filter="url(#cardShadow)">
+    <rect width="400" height="260" rx="8" fill="#ffffff" stroke="#3730a3" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 392 0 Q 400 0 400 8 L 400 50 L 0 50 Z" fill="url(#archGrad)"/>
+    <text x="200" y="22" font-size="11" font-weight="700" fill="#c7d2fe" text-anchor="middle">&lt;&lt;rest controller&gt;&gt;</text>
+    <text x="200" y="42" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">AuthController</text>
+    
+    <g transform="translate(18, 75)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> userService : UserService</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> activityLogService : ActivityLogService</text>
+    </g>
+
+    <line x1="0" y1="115" x2="400" y2="115" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 142)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> register(req : RegisterDTO) : ResponseEntity&lt;UserDTO&gt;</text>
+      <text y="28" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> login(req : LoginDTO) : ResponseEntity&lt;LoginDTO&gt;</text>
+      <text y="56" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> logout() : ResponseEntity&lt;Void&gt;</text>
+    </g>
+  </g>
+
+  <!-- CLASS 12: UserController -->
+  <g transform="translate(2240, 480)" filter="url(#cardShadow)">
+    <rect width="420" height="390" rx="8" fill="#ffffff" stroke="#3730a3" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 412 0 Q 420 0 420 8 L 420 50 L 0 50 Z" fill="url(#archGrad)"/>
+    <text x="210" y="22" font-size="11" font-weight="700" fill="#c7d2fe" text-anchor="middle">&lt;&lt;rest controller&gt;&gt;</text>
+    <text x="210" y="42" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">UserController</text>
+    
+    <g transform="translate(18, 75)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> userService : UserService</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> activityLogService : ActivityLogService</text>
+    </g>
+
+    <line x1="0" y1="115" x2="420" y2="115" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 142)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> createUser(dto : CreateUserDTO) : ResponseEntity&lt;UserDTO&gt;</text>
+      <text y="28" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getAllUsers() : ResponseEntity&lt;List&lt;UserDTO&gt;&gt;</text>
+      <text y="56" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getUserById(id : Integer) : ResponseEntity&lt;UserDTO&gt;</text>
+      <text y="84" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> updateUser(id, dto) : ResponseEntity&lt;UserDTO&gt;</text>
+      <text y="112" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> changePassword(id, dto) : ResponseEntity&lt;String&gt;</text>
+      <text y="140" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> deleteUser(id : Integer) : ResponseEntity&lt;String&gt;</text>
+      <text y="168" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> getCurrentUserEmail() : String</text>
+    </g>
+  </g>
+
+  <!-- CLASS 13: JwtService -->
+  <g transform="translate(2240, 910)" filter="url(#cardShadow)">
+    <rect width="400" height="270" rx="8" fill="#ffffff" stroke="#6b21a8" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 392 0 Q 400 0 400 8 L 400 50 L 0 50 Z" fill="url(#vendorGrad)"/>
+    <text x="200" y="22" font-size="11" font-weight="700" fill="#e9d5ff" text-anchor="middle">&lt;&lt;security service&gt;&gt;</text>
+    <text x="200" y="42" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">JwtService</text>
+    
+    <g transform="translate(18, 75)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> secretKey : String</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> expirationTimeMs : long</text>
+    </g>
+
+    <line x1="0" y1="115" x2="400" y2="115" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 142)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> generateToken(email : String) : String</text>
+      <text y="28" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> extractEmail(token : String) : String</text>
+      <text y="56" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> isTokenValid(token : String) : boolean</text>
+      <text y="84" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> getClaims(token : String) : Claims</text>
+    </g>
+  </g>
+
+  <!-- CLASS 14: UserService (Interface & Impl) -->
+  <g transform="translate(2730, 190)" filter="url(#cardShadow)">
+    <rect width="470" height="340" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 462 0 Q 470 0 470 8 L 470 50 L 0 50 Z" fill="url(#serviceGrad)"/>
+    <text x="235" y="22" font-size="11" font-weight="700" fill="#bfdbfe" text-anchor="middle">&lt;&lt;interface &amp; implementation&gt;&gt;</text>
+    <text x="235" y="42" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle">UserService / UserServiceImpl</text>
+    
+    <g transform="translate(18, 75)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> userRepository : UserRepository</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> passwordEncoder : PasswordEncoder</text>
+      <text y="48" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> jwtService : JwtService</text>
+    </g>
+
+    <line x1="0" y1="135" x2="470" y2="135" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 160)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> register(req : RegisterRequestDTO) : UserResponseDTO</text>
+      <text y="24" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> login(req : LoginRequestDTO) : LoginResponseDTO</text>
+      <text y="48" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getAllUsers() : List&lt;UserResponseDTO&gt;</text>
+      <text y="72" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getUserById(id : Integer) : UserResponseDTO</text>
+      <text y="96" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> updateUser(id: Integer, req: UpdateUserDTO) : UserResponseDTO</text>
+      <text y="120" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> createUser(req : CreateUserRequestDTO) : UserResponseDTO</text>
+      <text y="144" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> changePassword(id: Integer, req: ChangePwdDTO) : void</text>
+      <text y="168" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> deleteUser(id : Integer) : void</text>
+    </g>
+  </g>
+
+  <!-- CLASS 15: UserRepository -->
+  <g transform="translate(2730, 590)" filter="url(#cardShadow)">
+    <rect width="470" height="230" rx="8" fill="#ffffff" stroke="#b45309" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 462 0 Q 470 0 470 8 L 470 50 L 0 50 Z" fill="url(#regGrad)"/>
+    <text x="235" y="22" font-size="11" font-weight="700" fill="#fde68a" text-anchor="middle">&lt;&lt;interface / jpa repository&gt;&gt;</text>
+    <text x="235" y="42" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">UserRepository</text>
+    
+    <g transform="translate(18, 75)">
+      <text y="0" font-size="12" fill="#475569">Extends JpaRepository&lt;UserEntity, Integer&gt;</text>
+    </g>
+
+    <line x1="0" y1="95" x2="470" y2="95" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 120)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> existsByEmail(email : String) : boolean</text>
+      <text y="24" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> findByEmail(email : String) : Optional&lt;UserEntity&gt;</text>
+      <text y="48" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> save(user : UserEntity) : UserEntity</text>
+      <text y="72" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> findById(id : Integer) : Optional&lt;UserEntity&gt;</text>
+      <text y="96" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> deleteById(id : Integer) : void</text>
+    </g>
+  </g>
+
+  <!-- CLASS 16: ActivityLogService -->
+  <g transform="translate(2730, 860)" filter="url(#cardShadow)">
+    <rect width="470" height="210" rx="8" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 462 0 Q 470 0 470 8 L 470 48 L 0 48 Z" fill="url(#auditGrad)"/>
+    <text x="235" y="22" font-size="11" font-weight="700" fill="#cbd5e1" text-anchor="middle">&lt;&lt;service&gt;&gt;</text>
+    <text x="235" y="40" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">ActivityLogService</text>
+    
+    <g transform="translate(18, 72)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> activityLogRepository : ActivityLogRepository</text>
+    </g>
+
+    <line x1="0" y1="95" x2="470" y2="95" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 120)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> log(email: String, action: String, details: String, type: String) : void</text>
+      <text y="26" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> getRecentLogs() : List&lt;ActivityLog&gt;</text>
+      <text y="52" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> clearOldLogs(retentionDays : int) : void</text>
+    </g>
+  </g>
+
+  <!-- CLASS 17: BackupService -->
+  <g transform="translate(2730, 1110)" filter="url(#cardShadow)">
+    <rect width="470" height="230" rx="8" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 462 0 Q 470 0 470 8 L 470 48 L 0 48 Z" fill="url(#auditGrad)"/>
+    <text x="235" y="22" font-size="11" font-weight="700" fill="#cbd5e1" text-anchor="middle">&lt;&lt;service&gt;&gt;</text>
+    <text x="235" y="40" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">BackupService &amp; BackupController</text>
+    
+    <g transform="translate(18, 72)">
+      <text y="0" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> backupDirectory : Path</text>
+      <text y="24" font-size="13" fill="#1e293b"><tspan font-weight="700" fill="#dc2626">-</tspan> activityLogService : ActivityLogService</text>
+    </g>
+
+    <line x1="0" y1="115" x2="470" y2="115" stroke="#cbd5e1" stroke-width="1.5"/>
+
+    <g transform="translate(18, 140)">
+      <text y="0" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> performScheduledBackup() : void</text>
+      <text y="26" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> createManualBackup() : String</text>
+      <text y="52" font-size="12" fill="#1e293b"><tspan font-weight="700" fill="#16a34a">+</tspan> restoreBackup(fileName : String) : String</text>
+    </g>
+  </g>
+
+  <!-- ==================== FOOTER ==================== -->
+  <g transform="translate(0, 1690)">
+    <rect width="3500" height="30" fill="#0f172a"/>
+    <text x="50" y="20" font-size="12" fill="#94a3b8">Event Planning System &bull; Unified Single-Diagram Software Specification &bull; Generated for SLIIT Object Oriented System Design &bull; All 17 Classes &amp; Components Included</text>
+    <text x="3450" y="20" font-size="12" fill="#94a3b8" text-anchor="end">&copy; 2026 Event Planning System Project</text>
+  </g>
+</svg>

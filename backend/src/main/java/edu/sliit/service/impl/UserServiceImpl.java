@@ -234,30 +234,10 @@ public class UserServiceImpl implements UserService {
                         )
                 );
 
-        // Check current password
-        if (request.getCurrentPassword() == null
-                || request.getCurrentPassword().trim().isEmpty()) {
-
-            throw new ValidationException(
-                    "Current password is required"
-            );
-        }
-
-        // Check new password
+        // Validate new password
         if (!ValidationUtil.isValidPassword(request.getNewPassword())) {
-
             throw new ValidationException(
                     "New password must be at least 6 characters"
-            );
-        }
-
-        // Verify current password
-        if (!passwordEncoder.matches(
-                request.getCurrentPassword(),
-                user.getPassword())) {
-
-            throw new InvalidCredentialsException(
-                    "Current password is incorrect"
             );
         }
 
@@ -265,12 +245,12 @@ public class UserServiceImpl implements UserService {
         String encryptedPassword =
                 passwordEncoder.encode(request.getNewPassword());
 
+        // Update password
         user.setPassword(encryptedPassword);
 
-        // Save updated password
+        // Save updated user
         userRepository.save(user);
     }
-
     @Override
     public UserResponseDTO updateUser(
             Integer id,

@@ -1,26 +1,19 @@
 import React, { useState } from 'react';
+import { auth, BackendRole } from '../services/api';
 
 /**
  * 🔐 LOGIN PAGE
- * 
- * TODO: Your team members will implement this!
- * 
- * Requirements:
- * - Email & Password inputs
- * - Form validation
- * - Backend API call to POST /auth/login
- * - Store JWT token in localStorage
- * - Call onLoginSuccess with user data
- * 
- * Backend Response Expected:
- * {
- *   userId: number,
- *   name: string,
- *   email: string,
- *   role: 'OPERATIONS_MANAGER' | 'EVENT_COORDINATOR',
- *   token: string
- * }
+ * Connected to backend POST /auth/login
+ * Preserves exact backend roles:
+ * - ADMIN
+ * - OPERATIONS_MANAGER
+ * - EVENT_COORDINATOR
+ * - FINANCE_OFFICER
+ * - VENDOR
+ * - CUSTOMER
  */
+
+export type { BackendRole };
 
 interface LoginPageProps {
   onLoginSuccess: (userData: LoginSuccessData) => void;
@@ -31,7 +24,8 @@ export interface LoginSuccessData {
   userId: number;
   name: string;
   email: string;
-  role: 'operations' | 'coordinator';
+  phoneNum?: string | null;
+  role: BackendRole;
   token?: string;
 }
 
@@ -47,39 +41,29 @@ export default function LoginPage({ onLoginSuccess, onNavigateToRegister }: Logi
     setError('');
 
     try {
-      // TODO: Replace with actual API call
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+      const data = await auth.login({ email, password });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-      }
-
-      const data = await response.json();
-
-      // Map backend role to frontend role
-      const role = data.role === 'OPERATIONS_MANAGER' ? 'operations' : 'coordinator';
-
-      // Store token
+      // Consistently store JWT token
       if (data.token) {
         localStorage.setItem('authToken', data.token);
       }
 
-      // Call parent callback
-      onLoginSuccess({
+      // Store returned user information in localStorage
+      const userData: LoginSuccessData = {
         userId: data.userId,
         name: data.name,
         email: data.email,
-        role: role,
-        token: data.token
-      });
+        phoneNum: data.phoneNum,
+        role: data.role,
+        token: data.token,
+      };
+      localStorage.setItem('user', JSON.stringify(userData));
+
+      // Call parent callback
+      onLoginSuccess(userData);
 
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -93,7 +77,7 @@ export default function LoginPage({ onLoginSuccess, onNavigateToRegister }: Logi
             Sign in to EventFlow
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Placeholder - Your team will implement this!
+            Enter your credentials to access your workspace
           </p>
         </div>
 
