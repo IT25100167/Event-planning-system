@@ -161,6 +161,30 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<EventResponseDTO> getMyEvents() {
+        // Get currently logged-in user's email from JWT token
+        org.springframework.security.core.Authentication authentication =
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ValidationException("User not authenticated");
+        }
+
+        String email = authentication.getName();
+        
+        UserEntity currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ValidationException("User not found with email: " + email));
+
+        // Return events assigned to this coordinator
+        return eventRepository.findAll()
+                .stream()
+                .filter(event -> event.getCoordinator() != null && 
+                               event.getCoordinator().getUserId().equals(currentUser.getUserId()))
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     private EventResponseDTO mapToResponseDTO(EventEntity event) {
         return new EventResponseDTO(
                 event.getEventId(),

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BackendRole } from '../services/api';
 
 /**
  * 📝 REGISTER PAGE
@@ -32,7 +33,8 @@ export default function RegisterPage({ onRegisterSuccess, onNavigateToLogin }: R
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'EVENT_COORDINATOR' as 'OPERATIONS_MANAGER' | 'EVENT_COORDINATOR'
+    phoneNum: '',
+    role: 'CUSTOMER' as BackendRole
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -50,14 +52,15 @@ export default function RegisterPage({ onRegisterSuccess, onNavigateToLogin }: R
     }
 
     try {
-      // TODO: Replace with actual API call
+  
       const response = await fetch('http://localhost:8080/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fullName: formData.fullName,
+          name: formData.fullName,
           email: formData.email,
           password: formData.password,
+          phoneNum: formData.phoneNum || undefined,
           role: formData.role
         })
       });
@@ -137,12 +140,31 @@ export default function RegisterPage({ onRegisterSuccess, onNavigateToLogin }: R
                 id="role"
                 name="role"
                 value={formData.role}
-                onChange={(e) => setFormData({...formData, role: e.target.value as any})}
+                onChange={(e) => setFormData({...formData, role: e.target.value as BackendRole})}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               >
+                <option value="CUSTOMER">Customer</option>
+                <option value="VENDOR">Vendor</option>
+                <option value="FINANCE_OFFICER">Finance Officer</option>
                 <option value="EVENT_COORDINATOR">Event Coordinator</option>
                 <option value="OPERATIONS_MANAGER">Operations Manager</option>
+                <option value="ADMIN">Admin</option>
               </select>
+            </div>
+
+            <div>
+              <label htmlFor="phoneNum" className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <input
+                id="phoneNum"
+                name="phoneNum"
+                type="tel"
+                value={formData.phoneNum}
+                onChange={(e) => setFormData({...formData, phoneNum: e.target.value})}
+                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="1234567890"
+              />
             </div>
 
             <div>
