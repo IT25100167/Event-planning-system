@@ -11,6 +11,7 @@ import edu.sliit.exception.EmailAlreadyExistsException;
 import edu.sliit.exception.InvalidCredentialsException;
 import edu.sliit.exception.ValidationException;
 import edu.sliit.repository.UserRepository;
+import edu.sliit.repository.EventRepository;
 import edu.sliit.service.UserService;
 import edu.sliit.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -222,6 +224,14 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(id)) {
             throw new ValidationException(
                     "User not found with ID: " + id
+            );
+        }
+
+        // Check if user is assigned to any events
+        long eventCount = eventRepository.findByCoordinator_UserId(id).size();
+        if (eventCount > 0) {
+            throw new ValidationException(
+                    "Cannot delete user: This user is assigned as coordinator to " + eventCount + " event(s). Please reassign or delete those events first."
             );
         }
 
