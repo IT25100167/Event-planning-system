@@ -3,7 +3,8 @@ import {
   ArrowRight, Bell, CalendarDays, ChevronDown, ChevronRight, CircleDollarSign, ClipboardList,
   Clock3, Download, LayoutDashboard, Menu, MoreHorizontal,
   Package, PanelLeft, Plus, Search, Settings, ShieldCheck, Sparkles, Target, TrendingUp, UserRound,
-  Users, WalletCards, X, Zap, BarChart3, Building2, CheckCircle2, AlertTriangle
+  Users, WalletCards, X, Zap, BarChart3, Building2, CheckCircle2, AlertTriangle, FileText,
+  TrendingDown, Calendar, Filter, FileDown, FileSpreadsheet, File, PieChart, Activity
 } from 'lucide-react'
 import { apiService, EventResponse, UserResponse, AssignEventRequest } from '../../services/api'
 import { LoginSuccessData } from '../../auth/LoginPage'
@@ -122,17 +123,15 @@ export default function OperationsManagerDashboard({
     notes: '',
     status: ''
   })
+  const [deadlineFilter, setDeadlineFilter] = useState<'all' | 'today' | 'week' | 'overdue'>('all')
+  const [downloadingReport, setDownloadingReport] = useState<string | null>(null)
 
   // Navigation items for Operations Manager
   const managerNav = [
     ['Dashboard', LayoutDashboard],
     ['All Events', CalendarDays],
-    ['Event Assignments', ClipboardList],
-    ['Event Monitoring', Target],
     ['Deadlines', Clock3],
-    ['Vendors', Building2],
-    ['Reports', BarChart3],
-    ['Notifications', Bell]
+    ['Reports', BarChart3]
   ]
 
   // Fetch events from backend
@@ -373,7 +372,7 @@ export default function OperationsManagerDashboard({
     ['Overdue Events', overdueEvents.toString(), overdueEvents > 0 ? 'Needs attention' : 'On track', AlertTriangle, overdueEvents > 0 ? 'red' : 'green']
   ]
   
-  const rows = active === 'All Events' ? events : events
+  const rows = events
 
   console.log('Current state:', { active, search, eventsCount: events.length, rowsCount: rows.length })
 
@@ -412,10 +411,6 @@ export default function OperationsManagerDashboard({
               >
                 <Icon size={16} />
                 {label}
-
-                {label === 'Notifications' && (
-                    <span className="ml-auto h-2 w-2 rounded-full bg-rose-500" />
-                )}
               </button>
           ))}
         </nav>
@@ -475,16 +470,18 @@ export default function OperationsManagerDashboard({
 
         {/* Main Content Area */}
         <main className="mx-auto max-w-[1500px] p-5 md:p-8">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <p className="text-xs font-semibold text-[#6d55ed]">Monday, September 28, 2026</p>
-              <h1 className="mt-1 text-3xl font-semibold tracking-tight">Operations overview</h1>
-              <p className="mt-1 text-sm text-slate-500">Monitor every event, assignment, deadline, and vendor in one place.</p>
+          {active === 'Dashboard' && (
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <div>
+                <p className="text-xs font-semibold text-[#6d55ed]">Monday, September 28, 2026</p>
+                <h1 className="mt-1 text-3xl font-semibold tracking-tight">Operations overview</h1>
+                <p className="mt-1 text-sm text-slate-500">Monitor every event, assignment, deadline, and vendor in one place.</p>
+              </div>
+              <button onClick={() => setShowAssignDialog(true)} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#654ce6] px-4 text-xs font-semibold text-white">
+                <Plus size={16}/>Assign event
+              </button>
             </div>
-            <button onClick={() => setShowAssignDialog(true)} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#654ce6] px-4 text-xs font-semibold text-white">
-              <Plus size={16}/>Assign event
-            </button>
-          </div>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -509,7 +506,7 @@ export default function OperationsManagerDashboard({
           )}
 
           {/* Dashboard Content - Only show when not loading */}
-          {!loading && (
+          {!loading && active === 'Dashboard' && (
             <>
               {/* Statistics Cards */}
               <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
@@ -626,6 +623,600 @@ export default function OperationsManagerDashboard({
                   </table>
                 </div>
               </section>
+            </>
+          )}
+
+          {/* All Events Page - Full Table View */}
+          {!loading && active === 'All Events' && (
+            <>
+              {/* All Events Page Header */}
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                  <p className="text-xs font-semibold text-[#6d55ed]">Complete Event List</p>
+                  <h1 className="mt-1 text-3xl font-semibold tracking-tight">All Events</h1>
+                  <p className="mt-1 text-sm text-slate-500">Complete list of all events in the system with full details</p>
+                </div>
+                <button onClick={() => setShowAssignDialog(true)} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#654ce6] px-4 text-xs font-semibold text-white">
+                  <Plus size={16}/>Assign event
+                </button>
+              </div>
+
+            <section className="mt-7 rounded-2xl border border-slate-200 bg-white">
+              <div className="border-b border-slate-100 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold">All Events</h2>
+                    <p className="mt-1 text-xs text-slate-500">Complete list of all events in the system</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-2.5 text-slate-400" size={16}/>
+                      <input 
+                        value={search} 
+                        onChange={(e) => setSearch(e.target.value)} 
+                        placeholder="Search events..." 
+                        className="h-9 w-64 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-xs outline-none focus:border-violet-300"
+                      />
+                    </div>
+                    <button onClick={() => setShowAssignDialog(true)} className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#654ce6] px-4 text-xs font-semibold text-white hover:bg-[#5741cb]">
+                      <Plus size={16}/>Add Event
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center gap-2 text-xs">
+                  <span className="font-semibold text-slate-700">Total: {events.length} events</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-500">{completedEvents} Completed</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-500">{inProgressEvents} In Progress</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-500">{pendingEvents} Pending</span>
+                </div>
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[900px] text-left">
+                  <thead>
+                    <tr className="border-b border-slate-100 bg-slate-50 text-[10px] uppercase tracking-widest text-slate-400">
+                      <th className="px-5 py-3 font-bold">Event ID</th>
+                      <th className="px-5 py-3 font-bold">Event Name</th>
+                      <th className="px-5 py-3 font-bold">Coordinator</th>
+                      <th className="px-5 py-3 font-bold">Event Date</th>
+                      <th className="px-5 py-3 font-bold">Venue/Notes</th>
+                      <th className="px-5 py-3 font-bold">Progress</th>
+                      <th className="px-5 py-3 font-bold">Status</th>
+                      <th className="px-5 py-3 font-bold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.filter((e: EventType) => {
+                      const searchText = `${e.name} ${e.client} ${e.id}`.toLowerCase();
+                      return searchText.includes(search.toLowerCase());
+                    }).length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="px-5 py-12 text-center">
+                          <div className="flex flex-col items-center justify-center text-slate-400">
+                            <CalendarDays size={48} className="mb-3 opacity-20" />
+                            <p className="text-sm font-semibold">No events found</p>
+                            <p className="mt-1 text-xs">
+                              {search ? 'Try adjusting your search' : 'Create your first event to get started'}
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      rows.filter((e: EventType) => {
+                        const searchText = `${e.name} ${e.client} ${e.id}`.toLowerCase();
+                        return searchText.includes(search.toLowerCase());
+                      }).map((e: EventType) => (
+                        <tr key={e.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                          <td className="px-5 py-4">
+                            <p className="text-xs font-mono font-semibold text-violet-600">{e.id}</p>
+                          </td>
+                          <td className="px-5 py-4">
+                            <p className="text-sm font-semibold text-slate-800">{e.name}</p>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-2">
+                              <div className="grid h-7 w-7 place-items-center rounded-full bg-blue-100 text-[10px] font-bold text-blue-700">
+                                {e.client.split(' ').map(n => n[0]).join('').toUpperCase()}
+                              </div>
+                              <span className="text-xs text-slate-600">{e.client}</span>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-1 text-xs text-slate-600">
+                              <CalendarDays size={14} className="text-slate-400" />
+                              {e.date}
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <p className="text-xs text-slate-600 max-w-[200px] truncate">{e.venue}</p>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-2">
+                              <div className="h-2 w-24 rounded-full bg-slate-100">
+                                <div 
+                                  className={`h-full rounded-full ${e.color === 'green' ? 'bg-emerald-500' : e.color === 'violet' ? 'bg-violet-500' : e.color === 'amber' ? 'bg-amber-500' : 'bg-slate-400'}`}
+                                  style={{width: `${e.progress}%`}}
+                                />
+                              </div>
+                              <span className="text-[11px] font-semibold text-slate-500">{e.progress}%</span>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <Badge tone={e.color}>
+                              {e.status === 'Completed' && <CheckCircle2 size={11} />}
+                              {e.status === 'In progress' && <Clock3 size={11} />}
+                              {e.status === 'Planning' && <Clock3 size={11} />}
+                              {e.status}
+                            </Badge>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-2">
+                              <button 
+                                onClick={() => handleManageEvent(e)} 
+                                className="rounded-lg bg-violet-50 px-3 py-1.5 text-[11px] font-semibold text-violet-600 hover:bg-violet-100"
+                              >
+                                Manage
+                              </button>
+                              <button className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100">
+                                <MoreHorizontal size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Footer with pagination info */}
+              <div className="border-t border-slate-100 p-4">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <p>
+                    Showing {rows.filter((e: EventType) => {
+                      const searchText = `${e.name} ${e.client} ${e.id}`.toLowerCase();
+                      return searchText.includes(search.toLowerCase());
+                    }).length} of {events.length} events
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold hover:bg-slate-50 disabled:opacity-50" disabled>
+                      Previous
+                    </button>
+                    <span className="px-2 text-xs font-semibold">1</span>
+                    <button className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold hover:bg-slate-50 disabled:opacity-50" disabled>
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+            </>
+          )}
+
+          {/* Deadlines Page */}
+          {!loading && active === 'Deadlines' && (
+            <>
+              {/* Deadlines Page Header */}
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                  <p className="text-xs font-semibold text-[#6d55ed]">Event Deadlines Overview</p>
+                  <h1 className="mt-1 text-3xl font-semibold tracking-tight">Deadlines</h1>
+                  <p className="mt-1 text-sm text-slate-500">Track all upcoming and overdue event deadlines</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setDeadlineFilter('all')}
+                    className={`rounded-lg px-3 py-2 text-xs font-semibold ${deadlineFilter === 'all' ? 'bg-[#654ce6] text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setDeadlineFilter('today')}
+                    className={`rounded-lg px-3 py-2 text-xs font-semibold ${deadlineFilter === 'today' ? 'bg-[#654ce6] text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    Today
+                  </button>
+                  <button
+                    onClick={() => setDeadlineFilter('week')}
+                    className={`rounded-lg px-3 py-2 text-xs font-semibold ${deadlineFilter === 'week' ? 'bg-[#654ce6] text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    This Week
+                  </button>
+                  <button
+                    onClick={() => setDeadlineFilter('overdue')}
+                    className={`rounded-lg px-3 py-2 text-xs font-semibold ${deadlineFilter === 'overdue' ? 'bg-red-600 text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    Overdue
+                  </button>
+                </div>
+              </div>
+
+              {/* Deadlines Grid */}
+              <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {events.map((event) => {
+                  const eventDate = new Date(event.date)
+                  const today = new Date()
+                  const diffTime = eventDate.getTime() - today.getTime()
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+                  
+                  let urgencyColor = 'green'
+                  let urgencyText = 'On Track'
+                  if (diffDays < 0) {
+                    urgencyColor = 'red'
+                    urgencyText = 'Overdue'
+                  } else if (diffDays <= 3) {
+                    urgencyColor = 'red'
+                    urgencyText = `${diffDays} days left`
+                  } else if (diffDays <= 7) {
+                    urgencyColor = 'amber'
+                    urgencyText = `${diffDays} days left`
+                  } else {
+                    urgencyText = `${diffDays} days left`
+                  }
+
+                  // Filter logic
+                  if (deadlineFilter === 'today' && diffDays !== 0) return null
+                  if (deadlineFilter === 'week' && (diffDays < 0 || diffDays > 7)) return null
+                  if (deadlineFilter === 'overdue' && diffDays >= 0) return null
+
+                  return (
+                    <div key={event.id} className={`rounded-2xl border-2 ${urgencyColor === 'red' ? 'border-red-200 bg-red-50/50' : urgencyColor === 'amber' ? 'border-amber-200 bg-amber-50/50' : 'border-emerald-200 bg-emerald-50/50'} p-5 transition-all hover:shadow-lg cursor-pointer`} onClick={() => handleManageEvent(event)}>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <p className="text-xs font-mono font-semibold text-violet-600">{event.id}</p>
+                          <h3 className="mt-1 text-base font-semibold text-slate-800">{event.name}</h3>
+                          <p className="mt-1 text-xs text-slate-500">Coordinator: {event.client}</p>
+                        </div>
+                        <Badge tone={urgencyColor}>{event.status}</Badge>
+                      </div>
+                      
+                      <div className="mt-4 flex items-center gap-2 text-xs text-slate-600">
+                        <Calendar size={14} />
+                        <span>Deadline: {event.date}</span>
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className={`flex items-center gap-2 rounded-lg px-3 py-1.5 ${urgencyColor === 'red' ? 'bg-red-100 text-red-700' : urgencyColor === 'amber' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                          <Clock3 size={14} />
+                          <span className="text-xs font-semibold">{urgencyText}</span>
+                        </div>
+                        {diffDays >= 0 && (
+                          <div className="flex items-center gap-1">
+                            <div className="h-1.5 w-16 rounded-full bg-slate-200">
+                              <div className={`h-full rounded-full ${urgencyColor === 'amber' ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{width: `${Math.max(0, 100 - (diffDays / 30) * 100)}%`}} />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Empty State */}
+              {events.filter((event) => {
+                const eventDate = new Date(event.date)
+                const today = new Date()
+                const diffDays = Math.ceil((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+                
+                if (deadlineFilter === 'today' && diffDays !== 0) return false
+                if (deadlineFilter === 'week' && (diffDays < 0 || diffDays > 7)) return false
+                if (deadlineFilter === 'overdue' && diffDays >= 0) return false
+                return true
+              }).length === 0 && (
+                <div className="mt-12 flex flex-col items-center justify-center py-12 text-center">
+                  <Clock3 size={64} className="text-slate-300" />
+                  <h3 className="mt-4 text-lg font-semibold text-slate-700">No deadlines found</h3>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {deadlineFilter === 'all' ? 'All events are on track!' : `No ${deadlineFilter} deadlines at the moment`}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Reports Page */}
+          {!loading && active === 'Reports' && (
+            <>
+              {/* Reports Page Header */}
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                  <p className="text-xs font-semibold text-[#6d55ed]">Analytics & Insights</p>
+                  <h1 className="mt-1 text-3xl font-semibold tracking-tight">Reports</h1>
+                  <p className="mt-1 text-sm text-slate-500">Download comprehensive reports and analytics</p>
+                </div>
+              </div>
+
+              {/* Reports Grid */}
+              <div className="mt-7 grid gap-5 md:grid-cols-2">
+                {/* Event Summary Report with Bar Chart */}
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-12 w-12 place-items-center rounded-xl bg-violet-50 text-violet-600">
+                        <PieChart size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-semibold">Event Summary Report</h3>
+                        <p className="mt-0.5 text-xs text-slate-500">Complete event statistics with visual breakdown</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-2xl font-bold text-violet-600">{totalEvents}</p>
+                      <p className="mt-1 text-[10px] text-slate-500">Total Events</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-emerald-600">{completedEvents}</p>
+                      <p className="mt-1 text-[10px] text-slate-500">Completed</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-amber-600">{pendingEvents}</p>
+                      <p className="mt-1 text-[10px] text-slate-500">Pending</p>
+                    </div>
+                  </div>
+
+                  {/* Mini Bar Chart */}
+                  <div className="mt-6 space-y-3 rounded-lg bg-slate-50 p-4">
+                    <p className="text-xs font-semibold text-slate-600">Status Distribution</p>
+                    <div className="space-y-2.5">
+                      <div>
+                        <div className="mb-1 flex items-center justify-between text-xs">
+                          <span className="text-slate-600">Completed</span>
+                          <span className="font-semibold text-emerald-600">{completedEvents} ({Math.round((completedEvents / totalEvents) * 100)}%)</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-slate-200">
+                          <div className="h-full rounded-full bg-emerald-500" style={{width: `${(completedEvents / totalEvents) * 100}%`}} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="mb-1 flex items-center justify-between text-xs">
+                          <span className="text-slate-600">In Progress</span>
+                          <span className="font-semibold text-violet-600">{inProgressEvents} ({Math.round((inProgressEvents / totalEvents) * 100)}%)</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-slate-200">
+                          <div className="h-full rounded-full bg-violet-500" style={{width: `${(inProgressEvents / totalEvents) * 100}%`}} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="mb-1 flex items-center justify-between text-xs">
+                          <span className="text-slate-600">Pending</span>
+                          <span className="font-semibold text-amber-600">{pendingEvents} ({Math.round((pendingEvents / totalEvents) * 100)}%)</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-slate-200">
+                          <div className="h-full rounded-full bg-amber-500" style={{width: `${(pendingEvents / totalEvents) * 100}%`}} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setDownloadingReport('summary')
+                      setTimeout(() => {
+                        let csvData = 'Event Summary Report\n\n'
+                        csvData += 'Metric,Count,Percentage\n'
+                        csvData += `Total Events,${totalEvents},100%\n`
+                        csvData += `Completed Events,${completedEvents},${Math.round((completedEvents / totalEvents) * 100)}%\n`
+                        csvData += `In Progress Events,${inProgressEvents},${Math.round((inProgressEvents / totalEvents) * 100)}%\n`
+                        csvData += `Pending Events,${pendingEvents},${Math.round((pendingEvents / totalEvents) * 100)}%\n`
+                        csvData += `Overdue Events,${overdueEvents},${Math.round((overdueEvents / totalEvents) * 100)}%\n`
+                        csvData += `\nCompletion Rate,${Math.round((completedEvents / totalEvents) * 100)}%\n`
+                        
+                        const blob = new Blob([csvData], { type: 'text/csv' })
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = `event-summary-${new Date().toISOString().split('T')[0]}.csv`
+                        a.click()
+                        URL.revokeObjectURL(url)
+                        setDownloadingReport(null)
+                        onNotify('Event Summary Report downloaded!')
+                      }, 1000)
+                    }}
+                    disabled={downloadingReport === 'summary'}
+                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-50"
+                  >
+                    {downloadingReport === 'summary' ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <FileSpreadsheet size={16} />
+                        Download CSV Report
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Coordinator Performance Report with Progress Bars */}
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-12 w-12 place-items-center rounded-xl bg-blue-50 text-blue-600">
+                        <Users size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-semibold">Coordinator Performance</h3>
+                        <p className="mt-0.5 text-xs text-slate-500">Team productivity analysis</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 space-y-4">
+                    {Array.from(new Set(events.map(e => e.client))).slice(0, 5).map((coordinator, idx) => {
+                      const coordEvents = events.filter(e => e.client === coordinator)
+                      const coordCompleted = coordEvents.filter(e => e.status === 'Completed').length
+                      const completionRate = Math.round((coordCompleted / coordEvents.length) * 100)
+                      return (
+                        <div key={idx} className="rounded-lg bg-slate-50 p-3">
+                          <div className="mb-2 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="grid h-8 w-8 place-items-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
+                                {coordinator.split(' ').map(n => n[0]).join('').toUpperCase()}
+                              </div>
+                              <span className="text-sm font-semibold text-slate-700">{coordinator}</span>
+                            </div>
+                            <span className="text-xs font-semibold text-blue-600">{completionRate}%</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="h-2 flex-1 rounded-full bg-slate-200">
+                              <div className="h-full rounded-full bg-blue-500" style={{width: `${completionRate}%`}} />
+                            </div>
+                            <span className="text-xs text-slate-500">{coordCompleted}/{coordEvents.length}</span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setDownloadingReport('coordinator')
+                      setTimeout(() => {
+                        let csvData = 'Coordinator Performance Report\n\n'
+                        csvData += 'Coordinator Name,Total Events,Completed Events,In Progress,Pending,Completion Rate\n'
+                        Array.from(new Set(events.map(e => e.client))).forEach(coordinator => {
+                          const coordEvents = events.filter(e => e.client === coordinator)
+                          const coordCompleted = coordEvents.filter(e => e.status === 'Completed').length
+                          const coordInProgress = coordEvents.filter(e => e.status === 'In progress').length
+                          const coordPending = coordEvents.filter(e => e.status === 'Planning').length
+                          csvData += `${coordinator},${coordEvents.length},${coordCompleted},${coordInProgress},${coordPending},${Math.round((coordCompleted / coordEvents.length) * 100)}%\n`
+                        })
+                        const blob = new Blob([csvData], { type: 'text/csv' })
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = `coordinator-performance-${new Date().toISOString().split('T')[0]}.csv`
+                        a.click()
+                        URL.revokeObjectURL(url)
+                        setDownloadingReport(null)
+                        onNotify('Coordinator Performance Report downloaded!')
+                      }, 1000)
+                    }}
+                    disabled={downloadingReport === 'coordinator'}
+                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {downloadingReport === 'coordinator' ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <FileSpreadsheet size={16} />
+                        Download CSV Report
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* All Events Detailed Report */}
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-12 w-12 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
+                        <FileText size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-semibold">Complete Events Report</h3>
+                        <p className="mt-0.5 text-xs text-slate-500">Detailed event data with all information</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    <div className="rounded-lg bg-violet-50 p-4 text-center">
+                      <p className="text-2xl font-bold text-violet-600">{totalEvents}</p>
+                      <p className="mt-1 text-xs text-slate-600">Total Events</p>
+                    </div>
+                    <div className="rounded-lg bg-emerald-50 p-4 text-center">
+                      <p className="text-2xl font-bold text-emerald-600">{completedEvents}</p>
+                      <p className="mt-1 text-xs text-slate-600">Completed</p>
+                    </div>
+                    <div className="rounded-lg bg-blue-50 p-4 text-center">
+                      <p className="text-2xl font-bold text-blue-600">{inProgressEvents}</p>
+                      <p className="mt-1 text-xs text-slate-600">In Progress</p>
+                    </div>
+                    <div className="rounded-lg bg-amber-50 p-4 text-center">
+                      <p className="text-2xl font-bold text-amber-600">{Math.round((completedEvents / totalEvents) * 100)}%</p>
+                      <p className="mt-1 text-xs text-slate-600">Success Rate</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 rounded-lg bg-slate-50 p-4">
+                    <p className="text-xs font-semibold text-slate-600 mb-3">Report Contents:</p>
+                    <ul className="space-y-1.5 text-xs text-slate-600">
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 size={14} className="text-emerald-600" />
+                        Complete event details (ID, Name, Date, Status)
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 size={14} className="text-emerald-600" />
+                        Coordinator assignments and performance
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 size={14} className="text-emerald-600" />
+                        Progress tracking and completion rates
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 size={14} className="text-emerald-600" />
+                        Timeline analysis and venue information
+                      </li>
+                    </ul>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setDownloadingReport('complete')
+                      setTimeout(() => {
+                        let csvData = 'Complete Events Report\n\n'
+                        csvData += 'Event ID,Event Name,Event Date,Coordinator,Status,Progress,Venue/Notes\n'
+                        events.forEach(event => {
+                          csvData += `${event.id},"${event.name}",${event.date},${event.client},${event.status},${event.progress}%,"${event.venue}"\n`
+                        })
+                        csvData += `\n\nSummary Statistics\n`
+                        csvData += `Total Events,${totalEvents}\n`
+                        csvData += `Completed Events,${completedEvents}\n`
+                        csvData += `In Progress,${inProgressEvents}\n`
+                        csvData += `Pending,${pendingEvents}\n`
+                        csvData += `Completion Rate,${Math.round((completedEvents / totalEvents) * 100)}%\n`
+                        
+                        const blob = new Blob([csvData], { type: 'text/csv' })
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = `complete-events-report-${new Date().toISOString().split('T')[0]}.csv`
+                        a.click()
+                        URL.revokeObjectURL(url)
+                        setDownloadingReport(null)
+                        onNotify('Complete Events Report downloaded!')
+                      }, 1000)
+                    }}
+                    disabled={downloadingReport === 'complete'}
+                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+                  >
+                    {downloadingReport === 'complete' ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Generating CSV...
+                      </>
+                    ) : (
+                      <>
+                        <FileSpreadsheet size={16} />
+                        Download Complete Report (CSV)
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
             </>
           )}
         </main>

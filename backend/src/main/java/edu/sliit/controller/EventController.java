@@ -66,4 +66,9 @@ public class EventController {
     public ResponseEntity<List<EventResponseDTO>> getEventsByCoordinator(@PathVariable Integer coordinatorId) {
         return ResponseEntity.ok(eventService.getEventsByCoordinator(coordinatorId));
     }
+
+    @GetMapping("/my-events")
+    public ResponseEntity<List<EventResponseDTO>> getMyEvents() {
+        return ResponseEntity.ok(eventService.getMyEvents());
+    }
 }
