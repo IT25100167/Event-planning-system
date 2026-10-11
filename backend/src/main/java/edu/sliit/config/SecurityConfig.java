@@ -83,6 +83,14 @@ public class SecurityConfig {
                         .requestMatchers("/backup/**")
                         .hasRole("ADMIN")
 
+                        // Finance Officer endpoints
+                        .requestMatchers("/finance/**")
+                        .hasRole("FINANCE_OFFICER")
+
+                        // Vendor endpoints
+                        .requestMatchers("/api/vendor/**")
+                        .hasRole("VENDOR")
+
                         .anyRequest().authenticated()
                 )
 
